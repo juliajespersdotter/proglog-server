@@ -1,35 +1,30 @@
 {
-	"name": "proglog",
+	"name": "proglog-server",
 	"version": "1.0.0",
 	"description": "",
 	"main": "app.js",
 	"scripts": {
-		"start": "node ./bin/www",
-		"dev": "cross-env DEBUG=proglog:* nodemon ./bin/www",
-		"debug": "cross-env DEBUG=proglog:* nodemon --inspect ./bin/www"
+		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/juliajespersdotter/dotter-cms.git"
+		"url": "git+https://github.com/juliajespersdotter/proglog-server.git"
 	},
 	"author": "",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/juliajespersdotter/dotter-cms/issues"
+		"url": "https://github.com/juliajespersdotter/proglog-server/issues"
 	},
-	"homepage": "https://github.com/juliajespersdotter/dotter-cms#readme",
+	"homepage": "https://github.com/juliajespersdotter/proglog-server#readme",
 	"dependencies": {
-		"bcrypt": "^5.0.1",
-		"bookshelf": "^1.2.0",
 		"cors": "^2.8.5",
-		"debug": "~2.6.9",
-		"dotenv": "^16.0.0",
-		"express": "~4.16.1",
-		"express-validator": "^6.14.0",
-		"jsonwebtoken": "^8.5.1",
-		"knex": "^2.3.0",
-		"morgan": "~1.9.1",
-		"mysql": "^2.18.1"
+		"debug": "^4.3.4",
+		"dotenv": "^16.0.3",
+		"express": "^4.18.2",
+		"express-validator": "^6.14.2",
+		"morgan": "^1.10.0",
+		"mysql": "^2.18.1",
+		"sequelize": "^6.28.0"
 	},
 	"devDependencies": {
 		"cross-env": "^7.0.3",
