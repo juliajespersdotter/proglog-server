@@ -1,23 +1,24 @@
 // Setting up the database connection
-const knex = require('knex')({
-	debug: true,
-	client: 'mysql',
-	connection: process.env.CLEARDB_DATABASE_URL || {
-		host: process.env.DB_HOST || 'localhost',
-		port: process.env.DB_PORT || 3306,
-		user: process.env.DB_USER || 'root',
-		password: process.env.DB_PASSWORD || '',
-		database: process.env.DB_NAME || 'DotterDB',
-	},
+const { Sequelize } = require('sequelize')
+
+const sequelize = new Sequelize('proglogDB', {
+	host: 'localhost',
+	dialect:
+		'mysql' /* one of 'mysql' | 'postgres' | 'sqlite' | 'mariadb' | 'mssql' | 'db2' | 'snowflake' | 'oracle' */,
 })
 
-const bookshelf = require('bookshelf')(knex)
+try {
+	await sequelize.authenticate()
+	console.log('Connection has been established successfully.')
+} catch (error) {
+	console.error('Unable to connect to the database:', error)
+}
 
-const models = {}
-models.Posts = require('./Posts')(bookshelf)
-models.User = require('./User')(bookshelf)
+// const models = {}
+// models.Posts = require('./Posts')(bookshelf)
+// models.User = require('./User')(bookshelf)
 
 module.exports = {
-	bookshelf,
-	...models,
+	// bookshelf,
+	// ...models,
 }

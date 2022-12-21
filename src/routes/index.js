@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const auth = require('../middlewares/auth')
-const authController = require('../controllers/auth_controller')
-const userValidationRules = require('../validation/user')
+// const auth = require('../middlewares/auth')
+// const authController = require('../controllers/auth_controller')
+// const userValidationRules = require('../validation/user')
 
 router.get('/'),
 	(req, res, next) => {
@@ -10,15 +10,15 @@ router.get('/'),
 	}
 
 /* Register a new user */
-router.post(
-	'/register',
-	userValidationRules.createRules,
-	authController.register
-)
+// router.post(
+// 	'/register',
+// 	userValidationRules.createRules,
+// 	authController.register
+// )
 
-/* Register a new user */
-router.post('/login', userValidationRules.loginRules, authController.login)
+// /* Register a new user */
+// router.post('/login', userValidationRules.loginRules, authController.login)
 
-router.use('/posts', require('./posts'))
+// router.use('/posts', require('./posts'))
 
 module.exports = router
