@@ -6,6 +6,10 @@ const logger = require('morgan')
 // instantiate express
 const app = express()
 
+// app.get('/', (req, res) => {
+// 	res.send('hello world')
+// })
+
 // middlewares
 app.use(logger('dev'))
 app.use(cors())

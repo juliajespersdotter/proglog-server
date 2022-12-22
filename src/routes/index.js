@@ -4,10 +4,9 @@ const router = express.Router()
 // const authController = require('../controllers/auth_controller')
 // const userValidationRules = require('../validation/user')
 
-router.get('/'),
-	(req, res, next) => {
-		res.send({ success: true, data: { msg: 'We are up and running!' } })
-	}
+router.get('/', (req, res, next) => {
+	res.send({ success: true, data: { msg: 'We are up and running!' } })
+})
 
 /* Register a new user */
 // router.post(

@@ -21,6 +21,6 @@ sequelize
 // models.User = require('./User')(bookshelf)
 
 module.exports = {
-	// bookshelf,
+	sequelize,
 	// ...models,
 }
