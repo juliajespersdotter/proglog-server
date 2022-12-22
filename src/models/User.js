@@ -7,15 +7,8 @@ module.exports = (sequelize, DataTypes) => {
 		'user',
 		{
 			// Model attributes are defined here
-			id: {
-				type: DataTypes.INTEGER,
-				primaryKey: true,
-				autoIncrement: true,
-				allowNull: false,
-			},
 			username: {
 				type: DataTypes.STRING(45),
-				allowNull: false,
 			},
 			email: {
 				type: DataTypes.STRING(45),
@@ -23,11 +16,20 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			password: {
 				type: DataTypes.STRING(45),
-				allowNull: false,
+			},
+			steamId: {
+				type: DataTypes.INTEGER,
+			},
+			googleId: {
+				type: DataTypes.INTEGER,
+			},
+			avatar: {
+				type: DataTypes.STRING,
 			},
 		},
 		{
 			tableName: 'users',
+			timestamps: false,
 			// Other model options go here
 		}
 	)

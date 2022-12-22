@@ -33,7 +33,7 @@ db.User_List = require('./User_List')(sequelize, DataTypes)
 
 // models.Posts = require('./Posts')(bookshelf)
 // models.User = require('./User')(sequelize)
-console.log(models.User === sequelize.models.User) // true
+// console.log(db.User === sequelize.db.User) // true
 
 db.sequelize.sync({ force: false }).then(() => {
 	console.log('yes re-sync done!')

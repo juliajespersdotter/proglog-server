@@ -3,7 +3,24 @@
  */
 
 const { body } = require('express-validator')
-const models = require('../models')
+const db = require('../models')
+
+const createSteamRules = [
+	body('steamId')
+		.exists()
+		.custom(async value => {
+			const user = await db.User.findOne({
+				where: { steamId: value },
+			})
+			if (user) {
+				return Promise.reject('Steam account is already in use.') // duplicate emails not allowed
+			}
+
+			return Promise.resolve()
+		}),
+	body('displayName'),
+	body('avatar'),
+]
 
 const createRules = [
 	body('email')
@@ -59,6 +76,7 @@ const updateRules = [
 ]
 
 module.exports = {
+	createSteamRules,
 	createRules,
 	updateRules,
 	loginRules,

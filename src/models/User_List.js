@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				references: {
 					// This is a reference to another model
-					model: User,
+					model: 'user',
 				},
 			},
 		},
