@@ -1,10 +1,10 @@
 /**
- * User model
+ * User_List model
  */
 
 module.exports = (sequelize, DataTypes) => {
 	return sequelize.define(
-		'user',
+		'user_list',
 		{
 			// Model attributes are defined here
 			id: {
@@ -13,21 +13,29 @@ module.exports = (sequelize, DataTypes) => {
 				autoIncrement: true,
 				allowNull: false,
 			},
-			username: {
+			list_name: {
 				type: DataTypes.STRING(45),
 				allowNull: false,
 			},
-			email: {
-				type: DataTypes.STRING(45),
+			private: {
+				type: DataTypes.BOOLEAN,
 				// allowNull defaults to true
 			},
-			password: {
-				type: DataTypes.STRING(45),
+			deletable: {
+				type: DataTypes.BOOLEAN,
+			},
+			user_id: {
+				type: DataTypes.INTEGER,
+				foreignKey: true,
 				allowNull: false,
+				references: {
+					// This is a reference to another model
+					model: User,
+				},
 			},
 		},
 		{
-			tableName: 'users',
+			tableName: 'user_lists',
 			// Other model options go here
 		}
 	)

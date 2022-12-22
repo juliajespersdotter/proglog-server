@@ -1,10 +1,17 @@
 // Setting up the database connection
-const { Sequelize } = require('sequelize')
+const { Sequelize, DataTypes } = require('sequelize')
+const dbConfig = require('../config/dbConfig')
 
-const sequelize = new Sequelize('proglogDB', 'root', null, {
-	host: process.env.DB_HOST,
-	dialect:
-		'mysql' /* one of 'mysql' | 'postgres' | 'sqlite' | 'mariadb' | 'mssql' | 'db2' | 'snowflake' | 'oracle' */,
+const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
+	host: dbConfig.HOST,
+	dialect: dbConfig.DIALECT,
+
+	pool: {
+		max: dbConfig.pool.max,
+		min: dbConfig.pool.min,
+		acquire: dbConfig.pool.acquire,
+		idle: dbConfig.pool.idle,
+	},
 })
 
 sequelize
@@ -16,12 +23,20 @@ sequelize
 		console.error('Unable to connect to the database: ', error)
 	})
 
-const models = {}
+const db = {}
+
+db.Sequelize = Sequelize
+db.sequelize = sequelize
+
+db.User = require('./User')(sequelize, DataTypes)
+db.User_List = require('./User_List')(sequelize, DataTypes)
+
 // models.Posts = require('./Posts')(bookshelf)
-models.User = require('./User')(sequelize)
+// models.User = require('./User')(sequelize)
 console.log(models.User === sequelize.models.User) // true
 
-module.exports = {
-	sequelize,
-	// ...models,
-}
+db.sequelize.sync({ force: false }).then(() => {
+	console.log('yes re-sync done!')
+})
+
+module.exports = db
