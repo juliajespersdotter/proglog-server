@@ -16,9 +16,10 @@ sequelize
 		console.error('Unable to connect to the database: ', error)
 	})
 
-// const models = {}
+const models = {}
 // models.Posts = require('./Posts')(bookshelf)
-// models.User = require('./User')(bookshelf)
+models.User = require('./User')(sequelize)
+console.log(models.User === sequelize.models.User) // true
 
 module.exports = {
 	sequelize,
