@@ -2,7 +2,7 @@ const express = require('express')
 const passport = require('passport')
 const router = express.Router()
 const auth = require('../middlewares/auth')
-const authController = require('../controllers/authController')
+const steam_controller = require('../controllers/steam_controller')
 const userValidationRules = require('../validation/user')
 
 /* Register a new user */
@@ -32,7 +32,7 @@ router.post(
 	'/steam/register',
 	// passport.authenticate('steam', { failureRedirect: '/login' }),
 	userValidationRules.createSteamRules,
-	authController.steamRegister
+	steam_controller.steamRegister
 )
 
 router.get('/failure', (req, res, next) => {

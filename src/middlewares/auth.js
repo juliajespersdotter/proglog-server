@@ -1,4 +1,5 @@
 const passport = require('passport')
+const db = require('../models')
 const SteamStrategy = require('passport-steam').Strategy
 const GoogleStrategy = require('passport-google-oauth2').Strategy
 
@@ -28,7 +29,15 @@ passport.use(
 		(identifier, profile, done) => {
 			process.nextTick(() => {
 				profile.identifier = identifier
-				return done(null, profile)
+				console.log(profile)
+				const user = db.User.findOne({
+					where: { steamId: profile._json.steamid },
+				})
+				if (user) {
+					return done(null, profile)
+				} else {
+					console.log('No account found')
+				}
 			})
 		}
 	)
