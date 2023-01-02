@@ -22,6 +22,22 @@ const createSteamRules = [
 	body('avatar'),
 ]
 
+const createGoogleRules = [
+	body('id')
+		.exists()
+		.custom(async value => {
+			const user = await db.User.findOne({
+				where: { googleId: value },
+			})
+			if (user) {
+				return Promise.reject('Google account is already in use.') // duplicate emails not allowed
+			}
+
+			return Promise.resolve()
+		}),
+	body('displayName'),
+]
+
 const createRules = [
 	body('email')
 		.exists()
@@ -77,6 +93,7 @@ const updateRules = [
 
 module.exports = {
 	createSteamRules,
+	createGoogleRules,
 	createRules,
 	updateRules,
 	loginRules,

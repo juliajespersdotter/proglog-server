@@ -3,14 +3,20 @@ const passport = require('passport')
 const router = express.Router()
 const auth = require('../middlewares/auth')
 const steam_controller = require('../controllers/steam_controller')
+const google_controller = require('../controllers/google_controller')
 const userValidationRules = require('../validation/user')
 
 /* Register a new user */
 // router.post('/register', authController.register)
 
+router.get('/google', passport.authenticate('google', { scope: ['profile'] }))
+
 router.get(
-	'/google',
-	passport.authenticate('google', { scope: ['email', 'profile'] })
+	'/google/callback',
+	passport.authenticate('google', {
+		successRedirect: '/protected',
+		failureRedirect: '/login',
+	})
 )
 
 router.get('/steam', passport.authenticate('steam'), (req, res) => {
@@ -20,12 +26,21 @@ router.get('/steam', passport.authenticate('steam'), (req, res) => {
 
 router.get(
 	'/steam/return',
-	passport.authenticate('steam', { failureRedirect: '/login' }),
+	passport.authenticate('steam', {
+		failureRedirect: '/login',
+		successRedirect: '/auth/failure',
+	}),
 	(req, res) => {
 		// Successful authentication, redirect home.
 		// req.session(req.user)
 		res.redirect('/')
 	}
+)
+
+router.post(
+	'/google/register',
+	userValidationRules.createGoogleRules,
+	google_controller.googleRegister
 )
 
 router.post(
@@ -37,10 +52,6 @@ router.post(
 
 router.get('/failure', (req, res, next) => {
 	res.send('No shot!')
-})
-
-router.get('/protected', (req, res, next) => {
-	res.send('Hello!')
 })
 
 /* Login a user */

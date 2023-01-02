@@ -8,11 +8,20 @@ passport.use(
 		{
 			clientID: process.env.GOOGLE_CLIENT_ID,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-			callbackURL: 'http://localhost:3000/google/callback',
+			callbackURL: 'http://localhost:3000/auth/google/callback',
 			passReqToCallback: true,
 		},
 		function (request, accessToken, refreshToken, profile, done) {
 			// User.findOrCreate({ googleId: profile.id }, function (err, user) {
+			console.log(profile)
+			const user = db.User.findOne({
+				where: { googleId: profile.id },
+			})
+			if (user) {
+				return done(null, profile)
+			} else {
+				console.log('No account found')
+			}
 			return done(profile)
 			// })
 		}
