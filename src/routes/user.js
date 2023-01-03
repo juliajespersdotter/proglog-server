@@ -11,4 +11,7 @@ router.get('/:userId', userController.getUser)
 /** get user lists */
 router.get('/lists/:userId', userController.getUserLists)
 
+/** get a list with specific ID */
+router.get('/lists/:userId/:listId', userController.getList)
+
 module.exports = router

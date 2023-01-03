@@ -10,8 +10,9 @@ const { matchedData, validationResult } = require('express-validator')
 const getUser = async (req, res) => {
 	const userId = req.params.userId
 
-	try {
-		const user = await db.User.findOne({ where: { id: userId } })
+	const user = await db.User.findOne({ where: { id: userId } })
+
+	if (user) {
 		debug('Found user successfully: %0', user)
 		res.send({
 			status: 'success',
@@ -21,12 +22,11 @@ const getUser = async (req, res) => {
 				avatar: user.avatar,
 			},
 		})
-	} catch (err) {
+	} else {
 		res.status(500).send({
 			status: 'error',
 			message: 'Exception thrown when attempting to find user',
 		})
-		throw err
 	}
 }
 
@@ -38,25 +38,59 @@ const getUser = async (req, res) => {
 const getUserLists = async (req, res) => {
 	const userId = req.params.userId
 
-	try {
-		const userlists = await db.User_List.findAll({
-			where: { user_id: userId },
-		})
+	const userlists = await db.User_List.findAll({
+		where: { user_id: userId },
+	})
+
+	if (userlists) {
 		debug('Found user with lists successfully: %0', userlists)
 		res.send({
 			status: 'success',
 			data: userlists,
 		})
-	} catch (err) {
+	} else {
 		res.status(500).send({
 			status: 'error',
 			message: 'Exception thrown when attempting to find userlists',
 		})
-		throw err
 	}
 }
+
+/**
+ * Get a specific list (with games)
+ *
+ * GET /list/:userId/:listId
+ */
+const getList = async (req, res) => {
+	const listId = req.params.listId
+	const userId = req.params.userId
+
+	const list = await db.User_List.findOne({
+		where: { id: listId, user_id: userId, private: 0 },
+	})
+
+	if (list) {
+		debug('Found list successfully: %0', list)
+		res.send({
+			status: 'success',
+			data: list,
+		})
+	} else {
+		res.status(500).send({
+			status: 'error',
+			message: 'Exception thrown when attempting to find list',
+		})
+	}
+}
+
+/**
+ * Get PROFILE (GET GAMES, LISTS, PROFILE INFO ETC ALL IN ONE)
+ *
+ * GET /profile
+ */
 
 module.exports = {
 	getUser,
 	getUserLists,
+	getList,
 }
