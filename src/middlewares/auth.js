@@ -2,6 +2,19 @@ const passport = require('passport')
 const db = require('../models')
 const SteamStrategy = require('passport-steam').Strategy
 const GoogleStrategy = require('passport-google-oauth2').Strategy
+const LocalStrategy = require('passport-local').Strategy
+const crypto = require('crypto')
+
+passport.use(
+	new LocalStrategy(function verify(username, password, cb) {
+		const user = db.User.findOne({
+			where: { username: username },
+		})
+		if (!user) {
+			console.log('User not found')
+		}
+	})
+)
 
 passport.use(
 	new GoogleStrategy(
@@ -11,18 +24,28 @@ passport.use(
 			callbackURL: 'http://localhost:3000/auth/google/callback',
 			passReqToCallback: true,
 		},
-		function (request, accessToken, refreshToken, profile, done) {
-			// User.findOrCreate({ googleId: profile.id }, function (err, user) {
-			console.log(profile)
-			const user = db.User.findOne({
-				where: { googleId: profile.id },
+		async (request, accessToken, refreshToken, profile, done) => {
+			const [user, created] = await db.User.findOrCreate({
+				where: {
+					googleId: profile.id,
+					username: profile.displayName,
+					avatar: profile.picture,
+				},
 			})
-			if (user) {
-				return done(null, profile)
-			} else {
-				console.log('No account found')
-			}
-			return done(profile)
+			console.log(user.googleId)
+			console.log(created)
+			return done(null, profile)
+			// console.log(profile)
+			// const user = db.User.findOne({
+			// 	where: { googleId: profile.id },
+			// })
+			// if (user) {
+			// 	return done(null, profile)
+			// } else {
+			// 	// if no user is found create new
+			// 	console.log('No account found')
+			// }
+			// return done(profile)
 			// })
 		}
 	)
@@ -35,19 +58,21 @@ passport.use(
 			realm: 'http://localhost:3000/',
 			apiKey: process.env.STEAM_API_KEY,
 		},
-		(identifier, profile, done) => {
-			process.nextTick(() => {
-				profile.identifier = identifier
-				console.log(profile)
-				const user = db.User.findOne({
-					where: { steamId: profile._json.steamid },
-				})
-				if (user) {
-					return done(null, profile)
-				} else {
-					console.log('No account found')
-				}
+		async (identifier, profile, done) => {
+			// process.nextTick(() => {
+			profile.identifier = identifier
+			console.log(profile)
+			const [user, created] = await db.User.findOrCreate({
+				where: {
+					steamId: profile._json.steamid,
+					username: profile.displayName,
+					avatar: profile.avatar,
+				},
 			})
+			console.log(user.steamId)
+			console.log(created)
+			return done(null, profile)
+			// })
 		}
 	)
 )

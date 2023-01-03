@@ -6,31 +6,16 @@ const passport = require('passport')
 // const userValidationRules = require('../validation/user')
 
 router.get('/', (req, res, next) => {
-	res.send('<a href="/auth/google">Authenticate with google</a>')
-	res.send(req.user)
+	// res.send('<a href="/auth/google">Authenticate with google</a>')
+
+	res.send({ success: true, data: { msg: 'We are up and running!' } })
+
+	// res.send(req.user)
 })
 
 router.get('/protected', (req, res, next) => {
-	res.send('Hello!')
+	res.send(req.user)
 })
-
-// router.get(
-// 	'/google/callback',
-// 	passport.authenticate('google', {
-// 		successRedirect: '/protected',
-// 		failureRedirect: '/auth/failure',
-// 	})
-// )
-
-/* Register a new user */
-// router.post(
-// 	'/register',
-// 	userValidationRules.createRules,
-// 	authController.register
-// )
-
-// /* Register a new user */
-// router.post('/login', userValidationRules.loginRules, authController.login)
 
 router.use('/auth', require('./auth'))
 

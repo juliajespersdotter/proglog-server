@@ -7,12 +7,12 @@ module.exports = (sequelize, DataTypes) => {
 		'user_list',
 		{
 			// Model attributes are defined here
-			id: {
-				type: DataTypes.INTEGER,
-				primaryKey: true,
-				autoIncrement: true,
-				allowNull: false,
-			},
+			// id: {
+			// 	type: DataTypes.INTEGER,
+			// 	primaryKey: true,
+			// 	autoIncrement: true,
+			// 	allowNull: false,
+			// },
 			list_name: {
 				type: DataTypes.STRING(45),
 				allowNull: false,
@@ -36,6 +36,7 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		{
 			tableName: 'user_lists',
+			timestamps: false,
 			// Other model options go here
 		}
 	)
