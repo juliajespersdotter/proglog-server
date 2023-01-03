@@ -5,16 +5,54 @@ const GoogleStrategy = require('passport-google-oauth2').Strategy
 const LocalStrategy = require('passport-local').Strategy
 const crypto = require('crypto')
 
-passport.use(
-	new LocalStrategy(function verify(username, password, cb) {
-		const user = db.User.findOne({
-			where: { username: username },
-		})
-		if (!user) {
-			console.log('User not found')
-		}
-	})
-)
+// passport.use(
+// 	new LocalStrategy(async function verify(username, password, cb) {
+// 		// const user = await db.User.findOne({
+// 		// 	where: { username: username },
+// 		// })
+// 		// if (!user) {
+// 		// 	console.log('User not found')
+// 		// }
+// 			await db.User.findOne(
+// 				{
+// 					where: { username: username },
+// 				}) , (err, row) => {
+// 					if (err) {
+// 					return cb(err)
+// 				}
+// 				if (!row) {
+// 					return cb(null, false, {
+// 						message: 'Incorrect username or password.',
+// 					})
+// 				}
+// 				crypto.pbkdf2(
+// 					password,
+// 					row.salt,
+// 					310000,
+// 					32,
+// 					'sha256',
+// 					function (err, hashedPassword) {
+// 						if (err) {
+// 							return cb(err)
+// 						}
+// 						if (
+// 							!crypto.timingSafeEqual(
+// 								row.hashed_password,
+// 								hashedPassword
+// 							)
+// 						) {
+// 							return cb(null, false, {
+// 								message: 'Incorrect username or password.',
+// 							})
+// 						}
+// 						return cb(null, row)
+// 					}
+// 				)
+// 				}
+// 			}
+// 		)
+// 	})
+// )
 
 passport.use(
 	new GoogleStrategy(
@@ -35,18 +73,6 @@ passport.use(
 			console.log(user.googleId)
 			console.log(created)
 			return done(null, profile)
-			// console.log(profile)
-			// const user = db.User.findOne({
-			// 	where: { googleId: profile.id },
-			// })
-			// if (user) {
-			// 	return done(null, profile)
-			// } else {
-			// 	// if no user is found create new
-			// 	console.log('No account found')
-			// }
-			// return done(profile)
-			// })
 		}
 	)
 )
@@ -59,7 +85,6 @@ passport.use(
 			apiKey: process.env.STEAM_API_KEY,
 		},
 		async (identifier, profile, done) => {
-			// process.nextTick(() => {
 			profile.identifier = identifier
 			console.log(profile)
 			const [user, created] = await db.User.findOrCreate({
@@ -72,7 +97,6 @@ passport.use(
 			console.log(user.steamId)
 			console.log(created)
 			return done(null, profile)
-			// })
 		}
 	)
 )

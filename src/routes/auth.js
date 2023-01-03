@@ -2,14 +2,21 @@ const express = require('express')
 const passport = require('passport')
 const router = express.Router()
 const auth = require('../middlewares/auth')
-const steam_controller = require('../controllers/steam_controller')
-const google_controller = require('../controllers/google_controller')
+// const steam_controller = require('../controllers/steam_controller')
+// const google_controller = require('../controllers/google_controller')
 const userValidationRules = require('../validation/user')
 
 /* Register a new user */
 // router.post('/register', authController.register)
 
 /* Login a user */
+// router.post(
+// 	'/login/password',
+// 	passport.authenticate('local', {
+// 		successRedirect: '/protected',
+// 		failureRedirect: '/login',
+// 	})
+// )
 // router.post('/login', userValidationRules.loginRules, authController.login)
 
 // authenticate with google
