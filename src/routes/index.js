@@ -18,5 +18,6 @@ router.get('/protected', (req, res, next) => {
 })
 
 router.use('/auth', require('./auth'))
+router.use('/user', require('./user'))
 
 module.exports = router

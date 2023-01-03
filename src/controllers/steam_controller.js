@@ -1,5 +1,5 @@
 const db = require('../models')
-const debug = require('debug')('proglog:authController')
+const debug = require('debug')('proglog:steam_controller')
 const { matchedData, validationResult } = require('express-validator')
 
 /**

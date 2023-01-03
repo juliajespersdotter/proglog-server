@@ -1,7 +1,6 @@
 const express = require('express')
 const passport = require('passport')
 const router = express.Router()
-const auth = require('../middlewares/auth')
 // const steam_controller = require('../controllers/steam_controller')
 // const google_controller = require('../controllers/google_controller')
 const userValidationRules = require('../validation/user')
