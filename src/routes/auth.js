@@ -48,18 +48,4 @@ router.get(
 	}
 )
 
-// after authentication, register user if one with this ID does not exist
-// router.post(
-// 	'/google/register',
-// 	userValidationRules.createGoogleRules,
-// 	google_controller.googleRegister
-// )
-
-// router.post(
-// 	'/steam/register',
-// 	// passport.authenticate('steam', { failureRedirect: '/login' }),
-// 	userValidationRules.createSteamRules,
-// 	steam_controller.steamRegister
-// )
-
 module.exports = router

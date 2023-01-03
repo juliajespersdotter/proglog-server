@@ -8,14 +8,12 @@ const session = require('express-session')
 // instantiate express
 const app = express()
 
-// app.get('/', (req, res) => {
-// 	res.send('hello world')
-// })
+require('./src/middlewares/auth')
 
 app.use(
 	session({
 		secret: process.env.SESSION_SECRET,
-		saveUninitialized: false,
+		saveUninitialized: true,
 		resave: false,
 		cookie: {
 			maxAge: 3600000,

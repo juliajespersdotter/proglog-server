@@ -8,4 +8,7 @@ router.get('/')
 /** Get a specific user info */
 router.get('/:userId', userController.getUser)
 
+/** get user lists */
+router.get('/lists/:userId', userController.getUserLists)
+
 module.exports = router

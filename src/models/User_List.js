@@ -33,6 +33,9 @@ module.exports = (sequelize, DataTypes) => {
 					model: 'user',
 				},
 			},
+			description: {
+				type: DataTypes.STRING(45),
+			},
 		},
 		{
 			tableName: 'user_lists',

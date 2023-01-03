@@ -2,57 +2,6 @@ const passport = require('passport')
 const db = require('../models')
 const SteamStrategy = require('passport-steam').Strategy
 const GoogleStrategy = require('passport-google-oauth2').Strategy
-const LocalStrategy = require('passport-local').Strategy
-const crypto = require('crypto')
-
-// passport.use(
-// 	new LocalStrategy(async function verify(username, password, cb) {
-// 		// const user = await db.User.findOne({
-// 		// 	where: { username: username },
-// 		// })
-// 		// if (!user) {
-// 		// 	console.log('User not found')
-// 		// }
-// 			await db.User.findOne(
-// 				{
-// 					where: { username: username },
-// 				}) , (err, row) => {
-// 					if (err) {
-// 					return cb(err)
-// 				}
-// 				if (!row) {
-// 					return cb(null, false, {
-// 						message: 'Incorrect username or password.',
-// 					})
-// 				}
-// 				crypto.pbkdf2(
-// 					password,
-// 					row.salt,
-// 					310000,
-// 					32,
-// 					'sha256',
-// 					function (err, hashedPassword) {
-// 						if (err) {
-// 							return cb(err)
-// 						}
-// 						if (
-// 							!crypto.timingSafeEqual(
-// 								row.hashed_password,
-// 								hashedPassword
-// 							)
-// 						) {
-// 							return cb(null, false, {
-// 								message: 'Incorrect username or password.',
-// 							})
-// 						}
-// 						return cb(null, row)
-// 					}
-// 				)
-// 				}
-// 			}
-// 		)
-// 	})
-// )
 
 passport.use(
 	new GoogleStrategy(
@@ -70,8 +19,24 @@ passport.use(
 					avatar: profile.picture,
 				},
 			})
+
+			const [user_lists_defaults, listcreated] =
+				await db.User_List.findOrCreate({
+					where: {
+						user_id: user.id,
+					},
+					defaults: {
+						list_name: 'Want to Play',
+						private: false,
+						deletable: false,
+						user_id: user.id,
+						description: 'A list containing games you want to play',
+					},
+				})
 			console.log(user.googleId)
+			console.log(user_lists_defaults)
 			console.log(created)
+			console.log(listcreated)
 			return done(null, profile)
 		}
 	)
@@ -87,16 +52,37 @@ passport.use(
 		async (identifier, profile, done) => {
 			profile.identifier = identifier
 			console.log(profile)
-			const [user, created] = await db.User.findOrCreate({
-				where: {
-					steamId: profile._json.steamid,
-					username: profile.displayName,
-					avatar: profile.avatar,
-				},
-			})
-			console.log(user.steamId)
-			console.log(created)
-			return done(null, profile)
+			try {
+				const [user, created] = await db.User.findOrCreate({
+					where: {
+						steamId: profile._json.steamid,
+						username: profile.displayName,
+						avatar: profile._json.avatar,
+					},
+				})
+
+				const [user_lists_defaults, listcreated] =
+					await db.User_List.findOrCreate({
+						where: {
+							user_id: user.id,
+						},
+						defaults: {
+							list_name: 'Want to Play',
+							private: false,
+							deletable: false,
+							user_id: user.id,
+							description:
+								'A list containing games you want to play',
+						},
+					})
+				console.log(user.steamId)
+				console.log(user_lists_defaults)
+				console.log(listcreated)
+				console.log(created)
+				return done(null, profile)
+			} catch (err) {
+				console.log(err)
+			}
 		}
 	)
 )
