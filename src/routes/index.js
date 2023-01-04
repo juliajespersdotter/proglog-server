@@ -15,5 +15,6 @@ router.get('/protected', (req, res, next) => {
 
 router.use('/auth', require('./auth'))
 router.use('/user', require('./user'))
+router.use('/api', require('./IGDB_API/api'))
 
 module.exports = router
