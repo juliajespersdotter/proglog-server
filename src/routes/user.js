@@ -3,11 +3,18 @@ const router = express.Router()
 const userController = require('../controllers/user_controller')
 const { isUserAuthenticated } = require('../middlewares/auth')
 
-/** Get all users */
-router.get('/')
-
-router.get('/user', isUserAuthenticated, (req, res) => {
-	res.json(req.user)
+router.get('/', isUserAuthenticated, (req, res) => {
+	console.log(req.session.id)
+	res.json({
+		status: 'success',
+		user: {
+			userId: req.user.id,
+			username: req.user.username,
+			avatar: req.user.avatar,
+			steamId: req.user.steamId,
+			googleId: req.user.googleId,
+		},
+	})
 })
 
 /** Get a specific user info */

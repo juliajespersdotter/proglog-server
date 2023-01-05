@@ -131,20 +131,16 @@ passport.use(
 						description: 'A list containing games you want to play',
 					},
 				})
-			// console.log(user.steamId)
-			// console.log(user_lists_defaults)
-			// console.log(listcreated)
-			// console.log(created)
 
-			if (user && user[0]) {
-				return cb(null, user && user[0])
+			if (user) {
+				return cb(null, user)
 			}
 		}
 	)
 )
 
 passport.serializeUser((user, cb) => {
-	console.log('Serializing the user:', user)
+	// console.log('Serializing the user:', user)
 	cb(null, user.id)
 })
 
@@ -154,7 +150,7 @@ passport.deserializeUser(async (id, cb) => {
 		cb(err, null)
 	})
 
-	console.log('Deserialized user', user)
+	// console.log('Deserialized user', user)
 
 	if (user) cb(null, user)
 })

@@ -20,6 +20,7 @@ const errorLoginUrl = 'http://localhost:5173/login'
 // 	})
 // )
 // router.post('/login', userValidationRules.loginRules, authController.login)
+
 // authenticate with google
 router.get('/google', passport.authenticate('google', { scope: ['profile'] }))
 
@@ -46,6 +47,8 @@ router.get('/steam', passport.authenticate('steam'), (req, res) => {
 router.get(
 	'/steam/return',
 	passport.authenticate('steam', {
+		failureMessage:
+			'Cannot authenticate with Steam, please try again later',
 		failureRedirect: errorLoginUrl,
 		successRedirect: successLoginUrl,
 	}),
@@ -53,8 +56,6 @@ router.get(
 		// Successful authentication, redirect home.
 		console.log('User', req.user)
 		res.send('Thank you for signing in!')
-		// console.log(req)
-		// res.send(req.user)
 	}
 )
 
