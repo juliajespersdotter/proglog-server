@@ -2,32 +2,34 @@ const express = require('express')
 const cors = require('cors')
 const logger = require('morgan')
 const passport = require('passport')
+require('dotenv').config()
 const session = require('express-session')
 // const port = 3000
 
 // instantiate express
 const app = express()
 
-require('./src/middlewares/auth')
+require('./src/middlewares/passport')
+
+// middlewares
+app.use(logger('dev'))
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }))
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 
 app.use(
 	session({
 		secret: process.env.SESSION_SECRET,
-		saveUninitialized: true,
+		saveUninitialized: false,
 		resave: false,
 		cookie: {
 			maxAge: 3600000,
 		},
 	})
 )
+
 app.use(passport.initialize())
 app.use(passport.session())
-
-// middlewares
-app.use(logger('dev'))
-app.use(cors())
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
 
 app.use(require('./src/routes'))
 

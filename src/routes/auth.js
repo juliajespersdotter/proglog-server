@@ -5,6 +5,9 @@ const router = express.Router()
 // const google_controller = require('../controllers/google_controller')
 const userValidationRules = require('../validation/user')
 
+const successLoginUrl = 'http://localhost:5173/login/success'
+const errorLoginUrl = 'http://localhost:5173/login'
+
 /* Register a new user */
 // router.post('/register', authController.register)
 
@@ -17,16 +20,21 @@ const userValidationRules = require('../validation/user')
 // 	})
 // )
 // router.post('/login', userValidationRules.loginRules, authController.login)
-
 // authenticate with google
 router.get('/google', passport.authenticate('google', { scope: ['profile'] }))
 
 router.get(
 	'/google/callback',
 	passport.authenticate('google', {
-		successRedirect: '/protected',
-		failureRedirect: '/login',
-	})
+		failureMessage:
+			'Cannot authenticate with Google, please try again later',
+		successRedirect: successLoginUrl,
+		failureRedirect: errorLoginUrl,
+	}),
+	(req, res) => {
+		console.log('User', req.user)
+		res.send('Thank you for signing in!')
+	}
 )
 
 // authenticate with steam
@@ -38,14 +46,21 @@ router.get('/steam', passport.authenticate('steam'), (req, res) => {
 router.get(
 	'/steam/return',
 	passport.authenticate('steam', {
-		failureRedirect: '/login',
-		successRedirect: '/protected',
+		failureRedirect: errorLoginUrl,
+		successRedirect: successLoginUrl,
 	}),
 	(req, res) => {
 		// Successful authentication, redirect home.
-		// req.session(req.user)
-		res.redirect('/')
+		console.log('User', req.user)
+		res.send('Thank you for signing in!')
+		// console.log(req)
+		// res.send(req.user)
 	}
 )
+
+router.get('/logout', (req, res) => {
+	req.logout()
+	res.redirect('http://127.0.0.1:5173/login')
+})
 
 module.exports = router

@@ -8,7 +8,7 @@ const { matchedData, validationResult } = require('express-validator')
  * GET /steam/auth
  */
 
-const steamRegister = async (req, res) => {
+const steamLogin = async (req, res) => {
 	// destructure username and password from request body
 	// before creating new user, validate data
 	const errors = validationResult(req)
