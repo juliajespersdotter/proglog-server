@@ -4,7 +4,6 @@ const userController = require('../controllers/user_controller')
 const { isUserAuthenticated } = require('../middlewares/auth')
 
 router.get('/', isUserAuthenticated, (req, res) => {
-	console.log(req.session.id)
 	res.json({
 		status: 'success',
 		user: {
