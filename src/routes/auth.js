@@ -59,9 +59,4 @@ router.get(
 	}
 )
 
-router.get('/logout', (req, res) => {
-	req.logout()
-	res.redirect('http://127.0.0.1:5173/login')
-})
-
 module.exports = router

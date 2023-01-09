@@ -27,18 +27,16 @@ passport.use(
 				cb(err, null)
 			})
 
-			/*
 			if (created === true) {
 				try {
-					db.User_List.bulkCreate([
+					await db.User_List.bulkCreate([
 						{
 							user_id: user.id,
 							list_name: 'Want to Play',
 							private: false,
 							deletable: false,
 							user_id: user.id,
-							description:
-								'A list containing games you want to play',
+							description: 'A list of games you want to play',
 						},
 						{
 							user_id: user.id,
@@ -46,8 +44,7 @@ passport.use(
 							private: false,
 							deletable: false,
 							user_id: user.id,
-							description:
-								'A list containing games you have completed',
+							description: 'A list of games you have completed',
 						},
 						{
 							user_id: user.id,
@@ -56,20 +53,15 @@ passport.use(
 							deletable: false,
 							user_id: user.id,
 							description:
-								'A list containing games you are currently playing',
+								'A list of games you are currently playing',
 						},
 					])
-						.then(function () {
-							// Notice: There are no arguments here, as of right now you'll have to...
-							return db.User.findAll()
-						})
-						.then(function (users) {
-							console.log(users) // ... in order to get the array of user objects
-						})
 				} catch (err) {
 					console.log(err)
-				}*/
+				}
+			}
 
+			/*
 			const [user_lists_defaults, listcreated] =
 				await db.User_List.findOrCreate({
 					where: {
@@ -83,10 +75,12 @@ passport.use(
 						description: 'A list containing games you want to play',
 					},
 				})
+				
 			// console.log(user.googleId)
 			// console.log(user_lists_defaults)
 			// console.log(created)
 			// console.log(listcreated)
+			*/
 			if (user) {
 				return cb(null, user)
 			}
@@ -103,10 +97,11 @@ passport.use(
 		},
 		async (identifier, profile, cb) => {
 			profile.identifier = identifier
+			console.log('PROFILE', profile)
 			const defaultUser = {
 				steamId: profile._json.steamid,
 				username: profile.displayName,
-				avatar: profile._json.avatar,
+				avatar: profile._json.avatarfull,
 			}
 			const [user, created] = await db.User.findOrCreate({
 				where: {
@@ -118,6 +113,41 @@ passport.use(
 				cb(err, null)
 			})
 
+			if (created === true) {
+				try {
+					await db.User_List.bulkCreate([
+						{
+							user_id: user.id,
+							list_name: 'Want to Play',
+							private: false,
+							deletable: false,
+							user_id: user.id,
+							description: 'A list of games you want to play',
+						},
+						{
+							user_id: user.id,
+							list_name: 'Completed',
+							private: false,
+							deletable: false,
+							user_id: user.id,
+							description: 'A list of games you have completed',
+						},
+						{
+							user_id: user.id,
+							list_name: 'Currently Playing',
+							private: false,
+							deletable: false,
+							user_id: user.id,
+							description:
+								'A list of games you are currently playing',
+						},
+					])
+				} catch (err) {
+					console.log(err)
+				}
+			}
+
+			/*
 			const [user_lists_defaults, listcreated] =
 				await db.User_List.findOrCreate({
 					where: {
@@ -131,6 +161,7 @@ passport.use(
 						description: 'A list containing games you want to play',
 					},
 				})
+				*/
 
 			if (user) {
 				return cb(null, user)
