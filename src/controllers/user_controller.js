@@ -84,6 +84,49 @@ const getList = async (req, res) => {
 }
 
 /**
+ * POST new game to list
+ *
+ * POST /list/:userId
+ */
+const addGameToList = async (req, res) => {
+	console.log(req.body)
+	const userId = req.params.userId
+	const gameId = req.body.gameId
+	const listId = req.body.listId
+
+	const user = await db.User.findOne({ where: { id: userId } })
+	const existingGame = await db.Game_Userlist.findOne({
+		where: { list_id: listId, game_id: gameId },
+	})
+	console.log('existingGame', existingGame)
+
+	if (user && !existingGame) {
+		try {
+			const addedGame = await db.Game_Userlist.create({
+				list_id: listId,
+				game_id: gameId,
+			})
+
+			if (addedGame) {
+				res.status(200).send({
+					status: 'success',
+					data: addedGame,
+				})
+			}
+		} catch (err) {
+			console.log(err)
+		}
+	} else {
+		res.status(500).send({
+			status: 'error',
+			message: 'Exception thrown when attempting to add game to list',
+		})
+	}
+
+	console.log('IDS', userId, gameId, listId)
+}
+
+/**
  * Get PROFILE (GET GAMES, LISTS, PROFILE INFO ETC ALL IN ONE)
  *
  * GET /profile
@@ -93,4 +136,5 @@ module.exports = {
 	getUser,
 	getUserLists,
 	getList,
+	addGameToList,
 }

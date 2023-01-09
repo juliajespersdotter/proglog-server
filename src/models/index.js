@@ -30,10 +30,7 @@ db.sequelize = sequelize
 
 db.User = require('./User')(sequelize, DataTypes)
 db.User_List = require('./User_List')(sequelize, DataTypes)
-
-// models.Posts = require('./Posts')(bookshelf)
-// models.User = require('./User')(sequelize)
-// console.log(db.User === sequelize.db.User) // true
+db.Game_Userlist = require('./Game_Userlist')(sequelize, DataTypes)
 
 db.sequelize.sync({ force: false }).then(() => {
 	console.log('yes re-sync done!')

@@ -6,13 +6,6 @@ module.exports = (sequelize, DataTypes) => {
 	return sequelize.define(
 		'user_list',
 		{
-			// Model attributes are defined here
-			// id: {
-			// 	type: DataTypes.INTEGER,
-			// 	primaryKey: true,
-			// 	autoIncrement: true,
-			// 	allowNull: false,
-			// },
 			list_name: {
 				type: DataTypes.STRING(45),
 				allowNull: false,
