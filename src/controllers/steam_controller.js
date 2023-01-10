@@ -1,54 +1,41 @@
 const db = require('../models')
 const debug = require('debug')('proglog:steam_controller')
-const { matchedData, validationResult } = require('express-validator')
+const axios = require('axios').default
+
+const requestOptions = {
+	params: {
+		key: process.env.STEAM_API_KEY,
+		include_appinfo: true,
+		format: 'json',
+	},
+}
 
 /**
- * Register user
+ * Get Steam Owned games
  *
- * GET /steam/auth
+ * GET /steam/user
  */
 
-const steamLogin = async (req, res) => {
-	// destructure username and password from request body
-	// before creating new user, validate data
-	const errors = validationResult(req)
-	if (!errors.isEmpty()) {
-		return res.status(422).send({ status: 'fail', data: errors.array() })
-	}
-
-	// get valid data
-	const validData = matchedData(req)
-	console.log(validData)
-
-	// const { steamId, displayName, avatar, profileurl } = req.body
-	// console.log(req.body)
+const getOwnedGames = async (req, res) => {
+	const steamId = req.params.steamId
 
 	try {
-		// save valid data
-		const user = await db.User.create({
-			username: validData.displayName,
-			steamId: validData.steamId,
-			avatar: validData.avatar,
-		})
-		debug('Created new user successfully: %O', user)
-
-		// return only data that can be visible, not password
+		const steamData = await axios.get(
+			`http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?steamid=${steamId}`,
+			requestOptions
+		)
 		res.send({
 			status: 'success',
-			data: {
-				username: validData.displayName,
-				avatar: validData.avatar,
-			},
+			data: steamData.data.response,
 		})
-	} catch (error) {
+	} catch (err) {
 		res.status(500).send({
 			status: 'error',
-			message: 'Exception thrown in database when creating a new user.',
+			message: 'Exception thrown when attempting to access Steam API',
 		})
-		throw error
 	}
 }
 
 module.exports = {
-	steamRegister,
+	getOwnedGames,
 }

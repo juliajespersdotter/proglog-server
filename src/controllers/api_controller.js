@@ -55,14 +55,11 @@ const getGames = async (req, res) => {
 
 const getUpcomingGames = async (req, res) => {
 	const today = Math.round(new Date().getTime() / 1000)
-	console.log(today)
 	try {
 		const result = await axios.post(
 			`/games`,
 			`fields *, cover.*, screenshots.*,artworks.*, first_release_date; limit 50; where first_release_date> ${today} & platforms = (167,130,6,49) & themes != (42); sort first_release_date asc;`
 		)
-
-		console.log(result)
 
 		if (result) {
 			debug('Accessed data successfully: %0', result.data)
@@ -88,7 +85,6 @@ const getGenres = async (req, res) => {}
  */
 const getGamesWithIds = async (req, res) => {
 	const gameIds = req.body.ids
-	console.log(gameIds)
 	try {
 		const result = await axios.post(
 			`/games`,
