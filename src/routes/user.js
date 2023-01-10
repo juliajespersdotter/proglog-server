@@ -19,18 +19,17 @@ router.get('/', isUserAuthenticated, (req, res) => {
 /** Get a specific user info */
 router.get('/:userId', isUserAuthenticated, userController.getUser)
 
-/** get user lists */
+/** Get user lists */
 router.get('/lists/:userId', isUserAuthenticated, userController.getUserLists)
+
+/** Get games in user list */
+router.get('/games/:listId', isUserAuthenticated, userController.getGamesInList)
 
 /** Add Game to List */
 router.post('/add/:userId', userController.addGameToList)
 
 /** get a list with specific ID */
-router.get(
-	'/lists/:userId/:listId',
-	isUserAuthenticated,
-	userController.getList
-)
+router.get('/lists/:listId', isUserAuthenticated, userController.getList)
 
 router.delete('/logout', isUserAuthenticated, (req, res) => {
 	if (req.session) {

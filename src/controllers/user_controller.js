@@ -57,19 +57,50 @@ const getUserLists = async (req, res) => {
 }
 
 /**
+ * Get a User's games in list
+ *
+ * GET /games
+ */
+const getGamesInList = async (req, res) => {
+	const listId = req.params.listId
+
+	const games = await db.Game_Userlist.findAll({ where: { list_id: listId } })
+	const list = await db.User_List.findOne({ where: { id: listId } })
+	if (games.length && list) {
+		debug('Found games in list successfully: %0', games)
+		const idArray = []
+
+		games.forEach(game => {
+			idArray.push(game.game_id)
+		})
+
+		res.send({
+			status: 'success',
+			data: idArray,
+			list: list,
+		})
+	} else {
+		res.status(500).send({
+			status: 'error',
+			message: 'Exception thrown when attempting to find list with games',
+		})
+	}
+}
+
+/**
  * Get a specific list (with games)
  *
  * GET /list/:userId/:listId
  */
 const getList = async (req, res) => {
 	const listId = req.params.listId
-	const userId = req.params.userId
 
 	const list = await db.User_List.findOne({
-		where: { id: listId, user_id: userId, private: 0 },
+		where: { id: listId, private: 0 },
 	})
 
 	if (list) {
+		console.log(list)
 		debug('Found list successfully: %0', list)
 		res.send({
 			status: 'success',
@@ -135,6 +166,7 @@ const addGameToList = async (req, res) => {
 module.exports = {
 	getUser,
 	getUserLists,
+	getGamesInList,
 	getList,
 	addGameToList,
 }

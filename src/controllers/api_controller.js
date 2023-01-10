@@ -56,13 +56,17 @@ const getGames = async (req, res) => {
  *
  * GET /:gameId
  */
-const getGameWithId = async (req, res) => {
-	const gameId = req.params.gameId
+const getGamesWithIds = async (req, res) => {
+	const gameIds = req.body.ids
+	console.log(gameIds)
 	try {
-		const result = await axios.get(`/games/${gameId}`, requestOptions)
+		const result = await axios.post(
+			`/games`,
+			`where id = (${gameIds}); fields name, summary, cover.*;`
+		)
 
 		if (result) {
-			debug('Accessed data successfully: %0', result.data)
+			debug('Accessed games with ids successfully: %0', result.data)
 			res.send({
 				status: 'success',
 				data: result.data,
@@ -71,12 +75,12 @@ const getGameWithId = async (req, res) => {
 	} catch (err) {
 		res.status(500).send({
 			status: 'error',
-			message: 'Exception thrown when attempting to access RAWG API',
+			message: 'Exception thrown when attempting to access Game API',
 		})
 	}
 }
 
 module.exports = {
 	getGames,
-	getGameWithId,
+	getGamesWithIds,
 }

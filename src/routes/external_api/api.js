@@ -6,6 +6,6 @@ const apiController = require('../../controllers/api_controller')
 router.get('/games', apiController.getGames)
 
 /** Get a specific game */
-router.get('/games/:gameId', apiController.getGameWithId)
+router.post('/games', apiController.getGamesWithIds)
 
 module.exports = router
