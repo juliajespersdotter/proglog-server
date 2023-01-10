@@ -33,8 +33,10 @@ const requestOptions = {
  */
 const getGames = async (req, res) => {
 	try {
-		const result = await axios.get(`/games`, requestOptions)
-		console.log(requestOptions)
+		const result = await axios.post(
+			`/games`,
+			`fields name, platforms, summary, cover.*, screenshots.*, artworks.*, aggregated_rating; limit 20; sort first_release_date desc; where aggregated_rating >= 80 & aggregated_rating !=null; where themes != (42);`
+		)
 
 		if (result) {
 			debug('Accessed data successfully: %0', result.data)
@@ -50,6 +52,34 @@ const getGames = async (req, res) => {
 		})
 	}
 }
+
+const getUpcomingGames = async (req, res) => {
+	const today = Math.round(new Date().getTime() / 1000)
+	console.log(today)
+	try {
+		const result = await axios.post(
+			`/games`,
+			`fields *, cover.*, screenshots.*,artworks.*, first_release_date; limit 50; where first_release_date> ${today} & platforms = (167,130,6,49) & themes != (42); sort first_release_date asc;`
+		)
+
+		console.log(result)
+
+		if (result) {
+			debug('Accessed data successfully: %0', result.data)
+			res.send({
+				status: 'success',
+				data: result.data,
+			})
+		}
+	} catch (err) {
+		res.status(500).send({
+			status: 'error',
+			message: 'Exception thrown when attempting to access Game API',
+		})
+	}
+}
+
+const getGenres = async (req, res) => {}
 
 /**
  * Get a specific game and info
@@ -83,4 +113,6 @@ const getGamesWithIds = async (req, res) => {
 module.exports = {
 	getGames,
 	getGamesWithIds,
+	getUpcomingGames,
+	getGenres,
 }
