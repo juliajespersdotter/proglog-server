@@ -22,6 +22,9 @@ router.get('/:userId', isUserAuthenticated, userController.getUser)
 /** Get user lists */
 router.get('/lists/:userId', isUserAuthenticated, userController.getUserLists)
 
+/** Post New user list */
+router.post('/lists/:userId', isUserAuthenticated, userController.addNewList)
+
 /** Get games in user list */
 router.get('/games/:listId', isUserAuthenticated, userController.getGamesInList)
 

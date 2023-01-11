@@ -120,7 +120,6 @@ const getList = async (req, res) => {
  * POST /list/:userId
  */
 const addGameToList = async (req, res) => {
-	console.log(req.body)
 	const userId = req.params.userId
 	const gameId = req.body.gameId
 	const listId = req.body.listId
@@ -129,7 +128,6 @@ const addGameToList = async (req, res) => {
 	const existingGame = await db.Game_Userlist.findOne({
 		where: { list_id: listId, game_id: gameId },
 	})
-	console.log('existingGame', existingGame)
 
 	if (user && !existingGame) {
 		try {
@@ -153,8 +151,44 @@ const addGameToList = async (req, res) => {
 			message: 'Exception thrown when attempting to add game to list',
 		})
 	}
+}
 
-	console.log('IDS', userId, gameId, listId)
+/**
+ * POST new game to list
+ *
+ * POST /list/listId
+ */
+const addNewList = async (req, res) => {
+	const userId = req.params.userId
+	const listData = req.body.data
+
+	const user = await db.User.findOne({ where: { id: userId } })
+
+	if (user) {
+		try {
+			const addedList = await db.User_List.create({
+				list_name: listData.name,
+				user_id: userId,
+				description: listData.description,
+				private: listData.private,
+				deletable: 1,
+			})
+
+			if (addedList) {
+				res.status(200).send({
+					status: 'success',
+					data: addedList,
+				})
+			}
+		} catch (err) {
+			console.log(err)
+		}
+	} else {
+		res.status(500).send({
+			status: 'error',
+			message: 'Exception thrown when attempting to add game to list',
+		})
+	}
 }
 
 /**
@@ -169,4 +203,5 @@ module.exports = {
 	getGamesInList,
 	getList,
 	addGameToList,
+	addNewList,
 }
