@@ -25,11 +25,14 @@ router.get('/lists/:userId', isUserAuthenticated, userController.getUserLists)
 /** Post New user list */
 router.post('/lists/:userId', isUserAuthenticated, userController.addNewList)
 
+/** Delete User List */
+router.delete('/lists/:userId/:listId', userController.deleteList)
+
 /** Get games in user list */
 router.get('/games/:listId', isUserAuthenticated, userController.getGamesInList)
 
 /** Add Game to List */
-router.post('/add/:userId', userController.addGameToList)
+router.post('/add/:userId', isUserAuthenticated, userController.addGameToList)
 
 /** get a list with specific ID */
 router.get('/lists/:listId', isUserAuthenticated, userController.getList)

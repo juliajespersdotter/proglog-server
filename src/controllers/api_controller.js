@@ -39,7 +39,7 @@ const getGames = async (req, res) => {
 		)
 
 		if (result) {
-			debug('Accessed data successfully: %0', result.data)
+			// debug('Accessed data successfully: %0', result.data)
 			res.send({
 				status: 'success',
 				data: result.data,
@@ -62,7 +62,7 @@ const getUpcomingGames = async (req, res) => {
 		)
 
 		if (result) {
-			debug('Accessed data successfully: %0', result.data)
+			// debug('Accessed data successfully: %0', result.data)
 			res.send({
 				status: 'success',
 				data: result.data,
@@ -92,7 +92,7 @@ const getGamesWithIds = async (req, res) => {
 		)
 
 		if (result) {
-			debug('Accessed games with ids successfully: %0', result.data)
+			// debug('Accessed games with ids successfully: %0', result.data)
 			res.send({
 				status: 'success',
 				data: result.data,

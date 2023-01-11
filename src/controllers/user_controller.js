@@ -13,7 +13,7 @@ const getUser = async (req, res) => {
 	const user = await db.User.findOne({ where: { id: userId } })
 
 	if (user) {
-		debug('Found user successfully: %0', user)
+		// debug('Found user successfully: %0', user)
 		res.send({
 			status: 'success',
 			data: {
@@ -43,7 +43,7 @@ const getUserLists = async (req, res) => {
 	})
 
 	if (userlists) {
-		debug('Found user with lists successfully: %0', userlists)
+		// debug('Found user with lists successfully: %0', userlists)
 		res.send({
 			status: 'success',
 			data: userlists,
@@ -67,7 +67,7 @@ const getGamesInList = async (req, res) => {
 	const games = await db.Game_Userlist.findAll({ where: { list_id: listId } })
 	const list = await db.User_List.findOne({ where: { id: listId } })
 	if (games.length && list) {
-		debug('Found games in list successfully: %0', games)
+		// debug('Found games in list successfully: %0', games)
 		const idArray = []
 
 		games.forEach(game => {
@@ -96,12 +96,12 @@ const getList = async (req, res) => {
 	const listId = req.params.listId
 
 	const list = await db.User_List.findOne({
-		where: { id: listId, private: 0 },
+		where: { id: listId },
 	})
 
 	if (list) {
 		console.log(list)
-		debug('Found list successfully: %0', list)
+		// debug('Found list successfully: %0', list)
 		res.send({
 			status: 'success',
 			data: list,
@@ -192,6 +192,48 @@ const addNewList = async (req, res) => {
 }
 
 /**
+ * DELETE list
+ *
+ * DELETE /list/:userId
+ */
+const deleteList = async (req, res) => {
+	const userId = req.params.userId
+	const listId = req.params.listId
+	console.log(listId, userId)
+
+	const user = await db.User.findOne({ where: { id: userId } })
+	const userList = await db.User_List.findOne({
+		where: { id: listId, user_id: userId },
+	})
+
+	if (user && userList) {
+		try {
+			const gamesInList = await db.Game_Userlist.destroy({
+				where: { list_id: listId },
+			})
+			const deletedList = await db.User_List.destroy({
+				where: { id: listId },
+			})
+
+			if (deletedList) {
+				res.status(200).send({
+					status: 'success',
+					data: deletedList,
+					gamesInList,
+				})
+			}
+		} catch (err) {
+			console.log(err)
+		}
+	} else {
+		res.status(500).send({
+			status: 'error',
+			message: 'Exception thrown when attempting to add game to list',
+		})
+	}
+}
+
+/**
  * Get PROFILE (GET GAMES, LISTS, PROFILE INFO ETC ALL IN ONE)
  *
  * GET /profile
@@ -204,4 +246,5 @@ module.exports = {
 	getList,
 	addGameToList,
 	addNewList,
+	deleteList,
 }
