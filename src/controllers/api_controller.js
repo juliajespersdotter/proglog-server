@@ -88,7 +88,7 @@ const getGamesWithIds = async (req, res) => {
 	try {
 		const result = await axios.post(
 			`/games`,
-			`where id = (${gameIds}); fields *, name, summary, cover.*, genres.*, game_modes.*, screenshots.*, similar_games.*, involved_companies.*, platforms.*;`
+			`where id = (${gameIds}); fields *, name, summary, cover.image_id, genres.name, game_modes.name, screenshots.image_id, similar_games.cover.image_id, involved_companies.company.*, platforms.abbreviation;`
 		)
 
 		if (result) {
