@@ -35,10 +35,10 @@ const getReviews = async (req, res) => {
  */
 const addReview = async (req, res) => {
 	const gameId = req.params.gameId
-	const data = req.params.data
+	const data = req.body.data
 
 	try {
-		const user = await db.User.findOne({ where: { id: data.id } })
+		const user = await db.User.findOne({ where: { id: data.userId } })
 		const date = Date.now()
 		const review = await db.Review.create({
 			user_id: user.id,
