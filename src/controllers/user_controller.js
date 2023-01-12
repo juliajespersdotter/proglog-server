@@ -234,6 +234,48 @@ const deleteList = async (req, res) => {
 }
 
 /**
+ * DELETE game from list
+ *
+ * DELETE /games/:listId/:userId/:gameId
+ */
+const deleteGame = async (req, res) => {
+	const userId = req.params.userId
+	const listId = req.params.listId
+	const gameId = req.params.gameId
+	console.log(listId, userId, gameId)
+
+	const user = await db.User.findOne({ where: { id: userId } })
+	const userList = await db.User_List.findOne({
+		where: { id: listId, user_id: userId },
+	})
+	const game = await db.Game_Userlist.findOne({
+		where: { game_id: gameId, list_id: listId },
+	})
+
+	if (user && userList && game) {
+		try {
+			const gameInList = await db.Game_Userlist.destroy({
+				where: { game_id: gameId, list_id: listId },
+			})
+
+			if (gameInList) {
+				res.status(200).send({
+					status: 'success',
+					data: gameInList,
+				})
+			}
+		} catch (err) {
+			console.log(err)
+		}
+	} else {
+		res.status(500).send({
+			status: 'error',
+			message: 'Exception thrown when attempting to add game to list',
+		})
+	}
+}
+
+/**
  * Get PROFILE (GET GAMES, LISTS, PROFILE INFO ETC ALL IN ONE)
  *
  * GET /profile
@@ -247,4 +289,5 @@ module.exports = {
 	addGameToList,
 	addNewList,
 	deleteList,
+	deleteGame,
 }
