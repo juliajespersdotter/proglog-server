@@ -12,7 +12,7 @@ const getReviews = async (req, res) => {
 	try {
 		const reviews = await db.Review.findAll({ where: { game_id: gameId } })
 
-		if (reviews) {
+		if (reviews.length > 0) {
 			debug('Found review successfully: %0', reviews)
 			res.send({
 				status: 'success',
@@ -47,6 +47,7 @@ const addReview = async (req, res) => {
 			hide: data.hide,
 			created_on: date,
 			game_id: gameId,
+			rating: data.rating,
 		})
 		if (user) {
 			debug('Created review successfully: %0', review)
@@ -64,7 +65,44 @@ const addReview = async (req, res) => {
 	}
 }
 
+/**
+ * DELETE review if you own it
+ *
+ * DELETE /:userId/:reviewId
+ */
+const deleteReview = async (req, res) => {
+	const reviewId = req.params.reviewId
+	const userId = req.params.userId
+
+	const user = await db.User.findOne({ where: { id: userId } })
+	const review = await db.Review.findOne({
+		where: { id: reviewId, user_id: userId },
+	})
+	if (user && review) {
+		try {
+			const deletedReview = await db.Review.destroy({
+				where: { id: reviewId, user_id: userId },
+			})
+
+			if (deletedReview) {
+				res.status(200).send({
+					status: 'success',
+					data: deletedReview,
+				})
+			}
+		} catch (err) {
+			console.log(err)
+		}
+	} else {
+		res.status(500).send({
+			status: 'error',
+			message: 'Exception thrown when attempting to delete review',
+		})
+	}
+}
+
 module.exports = {
 	getReviews,
 	addReview,
+	deleteReview,
 }

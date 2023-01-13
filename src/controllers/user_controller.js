@@ -125,6 +125,7 @@ const addGameToList = async (req, res) => {
 	const listId = req.body.listId
 
 	const user = await db.User.findOne({ where: { id: userId } })
+
 	const existingGame = await db.Game_Userlist.findOne({
 		where: { list_id: listId, game_id: gameId },
 	})
@@ -270,7 +271,7 @@ const deleteGame = async (req, res) => {
 	} else {
 		res.status(500).send({
 			status: 'error',
-			message: 'Exception thrown when attempting to add game to list',
+			message: 'Exception thrown when attempting to delete game in list',
 		})
 	}
 }

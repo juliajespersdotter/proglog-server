@@ -9,4 +9,10 @@ router.get('/:gameId', isUserAuthenticated, reviewController.getReviews)
 /** Post new review */
 router.post('/:gameId', isUserAuthenticated, reviewController.addReview)
 
+router.delete(
+	'/:userId/:reviewId',
+	isUserAuthenticated,
+	reviewController.deleteReview
+)
+
 module.exports = router
