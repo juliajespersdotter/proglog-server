@@ -6,8 +6,22 @@ const { isUserAuthenticated } = require('../middlewares/auth')
 /** Get all reviews for a game**/
 router.get('/:gameId', isUserAuthenticated, reviewController.getReviews)
 
+/** Get all comments on review */
+router.get(
+	'/comments/:reviewId',
+	isUserAuthenticated,
+	reviewController.getCommentsForReview
+)
+
 /** Post new review */
 router.post('/:gameId', isUserAuthenticated, reviewController.addReview)
+
+/** Post new comment on review */
+router.post(
+	'/comments/:reviewId',
+	isUserAuthenticated,
+	reviewController.postCommentOnReview
+)
 
 router.delete(
 	'/:userId/:reviewId',

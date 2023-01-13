@@ -32,6 +32,7 @@ db.User = require('./User')(sequelize, DataTypes)
 db.User_List = require('./User_List')(sequelize, DataTypes)
 db.Game_Userlist = require('./Game_Userlist')(sequelize, DataTypes)
 db.Review = require('./Review')(sequelize, DataTypes)
+db.Comment = require('./Comment')(sequelize, DataTypes)
 
 db.User.hasMany(db.User_List, { foreignKey: 'user_id' })
 db.User.hasMany(db.Review, { foreignKey: 'user_id' })

@@ -11,25 +11,92 @@ const getReviews = async (req, res) => {
 	const gameId = req.params.gameId
 	try {
 		const reviews = await db.Review.findAll({ where: { game_id: gameId } })
-
+		const sortedReviews = reviews.sort(function (a, b) {
+			// sort reviews so latest review shows first
+			return new Date(b.created_on) - new Date(a.created_on)
+		})
 		if (reviews.length > 0) {
-			debug('Found review successfully: %0', reviews)
+			debug('Found reviews successfully: %0', reviews)
 			res.send({
 				status: 'success',
-				data: reviews,
+				data: sortedReviews,
 			})
 		}
 	} catch (err) {
 		res.status(500).send({
 			status: 'error',
-			message: 'Exception thrown when attempting to find list',
+			message: 'Exception thrown when attempting to find reviews',
 			err,
 		})
 	}
 }
 
 /**
- * Post a reviews for a game
+ * Get all reviews for a game
+ *
+ * GET /comments/:reviewId
+ */
+const getCommentsForReview = async (req, res) => {
+	const reviewId = req.params.reviewId
+	try {
+		const comments = await db.Comment.findAll({
+			where: { content_id: reviewId },
+		})
+		// const user = await db.User.findOne({where: {id: comments.user_id}})
+		if (comments.length > 0) {
+			debug('Found comments successfully: %0', comments)
+			res.send({
+				status: 'success',
+				data: comments,
+			})
+		}
+	} catch (err) {
+		res.status(500).send({
+			status: 'error',
+			message: 'Exception thrown when attempting to find comments',
+			err,
+		})
+	}
+}
+
+/**
+ *
+ * POST new comment on review
+ *
+ * POST /comments/:reviewId
+ */
+const postCommentOnReview = async (req, res) => {
+	const reviewId = req.params.reviewId
+	const data = req.body.data
+
+	try {
+		const review = await db.Review.findOne({ where: { id: reviewId } })
+		const date = Date.now()
+		const comment = await db.Comment.create({
+			content_id: review.id,
+			content: data.content,
+			created_on: date,
+			user_id: review.user_id,
+			created_by: data.creatorId,
+		})
+		if (comment) {
+			debug('Created comment successfully: %0', comment)
+			res.send({
+				status: 'success',
+				data: comment,
+			})
+		}
+	} catch (err) {
+		res.status(500).send({
+			status: 'error',
+			message: 'Exception thrown when attempting to create comment',
+			err,
+		})
+	}
+}
+
+/**
+ * Post a review for a game
  *
  * POST /:gameId/
  */
@@ -59,7 +126,7 @@ const addReview = async (req, res) => {
 	} catch (err) {
 		res.status(500).send({
 			status: 'error',
-			message: 'Exception thrown when attempting to find list',
+			message: 'Exception thrown when attempting to create review',
 			err,
 		})
 	}
@@ -105,4 +172,6 @@ module.exports = {
 	getReviews,
 	addReview,
 	deleteReview,
+	getCommentsForReview,
+	postCommentOnReview,
 }
