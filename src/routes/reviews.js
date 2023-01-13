@@ -23,6 +23,13 @@ router.post(
 	reviewController.postCommentOnReview
 )
 
+/** Delete comment on review */
+router.delete(
+	'/comments/:userId/:commentId',
+	isUserAuthenticated,
+	reviewController.deleteComment
+)
+
 router.delete(
 	'/:userId/:reviewId',
 	isUserAuthenticated,

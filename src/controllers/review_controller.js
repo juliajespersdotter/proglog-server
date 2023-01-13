@@ -168,10 +168,48 @@ const deleteReview = async (req, res) => {
 	}
 }
 
+/**
+ * DELETE review if you own it
+ *
+ * DELETE /comments/:userId/:commentId
+ */
+const deleteComment = async (req, res) => {
+	// console.log(commentId, userId)
+	const commentId = req.params.commentId
+	const userId = req.params.userId
+
+	const user = await db.User.findOne({ where: { id: userId } })
+	const comment = await db.Comment.findOne({
+		where: { id: commentId, created_by: userId },
+	})
+	if (user && comment) {
+		try {
+			const deletedComment = await db.Comment.destroy({
+				where: { id: commentId, created_by: userId },
+			})
+
+			if (deletedComment) {
+				res.status(200).send({
+					status: 'success',
+					data: deletedComment,
+				})
+			}
+		} catch (err) {
+			console.log(err)
+		}
+	} else {
+		res.status(500).send({
+			status: 'error',
+			message: 'Exception thrown when attempting to delete comment',
+		})
+	}
+}
+
 module.exports = {
 	getReviews,
-	addReview,
-	deleteReview,
 	getCommentsForReview,
+	addReview,
 	postCommentOnReview,
+	deleteReview,
+	deleteComment,
 }
