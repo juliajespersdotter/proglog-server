@@ -10,6 +10,9 @@ router.get('/games', apiController.getGames)
 /** Get a specific game */
 router.post('/games', apiController.getGamesWithIds)
 
+/** Search router */
+router.get('/search/:query', apiController.getSearchResult)
+
 router.get('/coming-soon', apiController.getUpcomingGames)
 
 router.get('/steam/:steamId', steamController.getOwnedGames)

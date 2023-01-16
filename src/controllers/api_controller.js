@@ -38,7 +38,7 @@ const getGames = async (req, res) => {
 			`fields name, platforms, summary, cover.*, screenshots.*, artworks.*, aggregated_rating; limit 20; sort first_release_date desc; where aggregated_rating >= 80 & aggregated_rating !=null; where themes != (42);`
 		)
 
-		if (result) {
+		if (result && result.data.length > 0) {
 			// debug('Accessed data successfully: %0', result.data)
 			res.send({
 				status: 'success',
@@ -61,7 +61,7 @@ const getUpcomingGames = async (req, res) => {
 			`fields *, cover.*, screenshots.*,artworks.*, first_release_date; limit 50; where first_release_date> ${today} & platforms = (167,130,6,49) & themes != (42); sort first_release_date asc;`
 		)
 
-		if (result) {
+		if (result && result.data.length > 0) {
 			// debug('Accessed data successfully: %0', result.data)
 			res.send({
 				status: 'success',
@@ -79,6 +79,39 @@ const getUpcomingGames = async (req, res) => {
 const getGenres = async (req, res) => {}
 
 /**
+ * Query game
+ *
+ * GET /search/:query
+ */
+const getSearchResult = async (req, res) => {
+	// const category = req.params.category
+	const query = req.params.query
+
+	try {
+		const result = await axios.post(
+			`/games`,
+			`search "${query}"; fields *, cover.*, screenshots.*,artworks.*, first_release_date; limit 20; where themes != (42);`
+		)
+		console.log(result)
+
+		if (result && result.data.length > 0) {
+			// debug('Accessed data successfully: %0', result.data)
+			res.send({
+				status: 'success',
+				data: result.data,
+			})
+		} else {
+			throw new error()
+		}
+	} catch (err) {
+		res.status(500).send({
+			status: 'error',
+			message: 'Exception thrown when attempting to access Game API',
+		})
+	}
+}
+
+/**
  * Get a specific game and info
  *
  * GET /:gameId
@@ -91,7 +124,7 @@ const getGamesWithIds = async (req, res) => {
 			`where id = (${gameIds}); fields *, name, summary, cover.image_id, genres.name, game_modes.name, screenshots.image_id, similar_games.cover.image_id, involved_companies.company.*, platforms.abbreviation;`
 		)
 
-		if (result) {
+		if (result && result.data.length > 0) {
 			// debug('Accessed games with ids successfully: %0', result.data)
 			res.send({
 				status: 'success',
@@ -109,6 +142,7 @@ const getGamesWithIds = async (req, res) => {
 module.exports = {
 	getGames,
 	getGamesWithIds,
+	getSearchResult,
 	getUpcomingGames,
 	getGenres,
 }
