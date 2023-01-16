@@ -61,4 +61,6 @@ router.delete('/logout', isUserAuthenticated, (req, res) => {
 	}
 })
 
+router.get('/profile/:id', isUserAuthenticated, userController.getProfileData)
+
 module.exports = router

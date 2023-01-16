@@ -281,6 +281,31 @@ const deleteGame = async (req, res) => {
  *
  * GET /profile
  */
+const getProfileData = async (req, res) => {
+	const userId = req.params.id
+
+	try {
+		const user = await db.User.findOne({ where: { id: userId } })
+		const userLists = await db.User_List.findAll({
+			where: { user_id: user.id },
+		})
+		const userReviews = await db.Review.findAll({
+			where: { user_id: user.id },
+		})
+
+		res.status(200).send({
+			status: 'success',
+			user: user,
+			reviews: userReviews,
+			lists: userLists,
+		})
+	} catch {
+		res.status(500).send({
+			status: 'error',
+			message: 'Exception thrown when attempting to get user profile',
+		})
+	}
+}
 
 module.exports = {
 	getUser,
@@ -291,4 +316,5 @@ module.exports = {
 	addNewList,
 	deleteList,
 	deleteGame,
+	getProfileData,
 }
