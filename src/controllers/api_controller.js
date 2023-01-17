@@ -23,25 +23,51 @@ const client = igdb(
 // }
 
 /**
- * Get all games
+ * Get games by Genre
  *
- * GET /
+ * GET /genres/:id
  */
-const getGames = async (req, res) => {
+const getGamesByGenre = async (req, res) => {
+	const genreId = req.params.id
+	const page = req.params.page
 	try {
-		const result = await axios.post(
-			`/games`,
-			`fields name, platforms, summary, cover.*, screenshots.*, artworks.*, aggregated_rating; limit 20; sort first_release_date desc; where aggregated_rating >= 80 & aggregated_rating !=null; where themes != (42);`
-		)
+		const result = await client
+			.query('games', 'result')
+			.fields([
+				'*',
+				'cover.image_id',
+				'genres.*',
+				'screenshots.*',
+				'hypes',
+				'artworks.*',
+				'first_release_date',
+			])
+			.offset(page)
+			.where(`genres = ${genreId} & themes != (42) & hypes!=n`)
+			.sort('hypes desc')
+			.limit(20)
+			.request('/games')
+
+		const count = await client
+			.fields('genres.*')
+			.query('games/count', 'count')
+			.where(`genres = ${genreId} & themes != (42) & hypes!=n`)
+			.request('/games/count')
+
+		console.log(result.data)
 
 		if (result && result.data.length > 0) {
 			// debug('Accessed data successfully: %0', result.data)
 			res.send({
 				status: 'success',
 				data: result.data,
+				count: count.data.count,
 			})
+		} else {
+			throw new Error()
 		}
 	} catch (err) {
+		console.log(err)
 		res.status(500).send({
 			status: 'error',
 			message: 'Exception thrown when attempting to access Game API',
@@ -52,10 +78,23 @@ const getGames = async (req, res) => {
 const getUpcomingGames = async (req, res) => {
 	const today = Math.round(new Date().getTime() / 1000)
 	try {
-		const result = await axios.post(
-			`/games`,
-			`fields *, cover.*, screenshots.*,artworks.*, first_release_date; limit 50; where first_release_date> ${today} & platforms = (167,130,6,49) & themes != (42); sort first_release_date asc;`
-		)
+		const result = await client
+			.query('games', 'result')
+			.fields([
+				'*',
+				'cover.image_id',
+				'genres.*',
+				'screenshots.*',
+				'hypes',
+				'artworks.*',
+				'first_release_date',
+			])
+			.where(
+				`themes != (42) & hypes != n & first_release_date > ${today} & platforms = (167,130,6,49)`
+			)
+			.sort('first_release_date asc')
+			.limit(50)
+			.request('/games')
 
 		if (result && result.data.length > 0) {
 			// debug('Accessed data successfully: %0', result.data)
@@ -72,7 +111,33 @@ const getUpcomingGames = async (req, res) => {
 	}
 }
 
-const getGenres = async (req, res) => {}
+const getGenres = async (req, res) => {
+	try {
+		const result = await client
+			.query('genres', 'result')
+			.fields('*')
+			.limit(100)
+			.request('/genres')
+
+		console.log(result.data)
+
+		if (result && result.data.length > 0) {
+			// debug('Accessed data successfully: %0', result.data)
+			res.send({
+				status: 'success',
+				data: result.data,
+			})
+		} else {
+			throw new Error()
+		}
+	} catch (err) {
+		console.log(err)
+		res.status(500).send({
+			status: 'error',
+			message: 'Exception thrown when attempting to access Game API',
+		})
+	}
+}
 
 /**
  * Query game
@@ -83,7 +148,6 @@ const getSearchResult = async (req, res) => {
 	// const category = req.params.category
 	const query = req.params.query
 	const page = req.params.page
-	console.log(page)
 
 	try {
 		const result = await client
@@ -154,7 +218,7 @@ const getGamesWithIds = async (req, res) => {
 }
 
 module.exports = {
-	getGames,
+	getGamesByGenre,
 	getGamesWithIds,
 	getSearchResult,
 	getUpcomingGames,
