@@ -1,30 +1,26 @@
+const { Error } = require('sequelize')
+
 const debug = require('debug')('proglog:apiController')
 const axios = require('axios').default
+const igdb = require('igdb-api-node').default
 
-// https://api.rawg.io/api/games/3498?key=RAWG_API_TOKEN
-// const api_key = process.env.RAWG_API_TOKEN
-
-// axios.defaults.baseURL = 'https://api.rawg.io/api'
 axios.defaults.baseURL = 'https://api.igdb.com/v4/'
 axios.defaults.headers.common[
 	'Authorization'
 ] = `Bearer ${process.env.IGDB_ACCESS_TOKEN}`
 axios.defaults.headers.common['Client-ID'] = ` ${process.env.IGDB_CLIENT_ID}`
 // axios.defaults.params['key'] = api_key
+const client = igdb(
+	`${process.env.IGDB_CLIENT_ID}`,
+	`${process.env.IGDB_ACCESS_TOKEN}`
+)
 
-const requestOptions = {
-	params: {
-		//  key: api_key,
-		fields: 'name,cover.*, screenshots.*, artworks.*',
-		limit: 20,
-		sort: 'release_dates.date desc;',
-	},
-	// data: 'sort=release_dates.date desc; fields=*,screenshots.*,artworks.*;',
-	// data: {
-	// 	fields: 'artworks',
-	// 	limit: 22,
-	// },
-}
+// const requestOptions = {
+// 	method: 'post',
+// 	baseUrl: 'https://api.igdb.com/v4/',
+// 	Authorization: `Bearer ${process.env.IGDB_ACCESS_TOKEN}`,
+// 	ClientID: `${process.env.IGDB_CLIENT_ID}`,
+// }
 
 /**
  * Get all games
@@ -86,24 +82,42 @@ const getGenres = async (req, res) => {}
 const getSearchResult = async (req, res) => {
 	// const category = req.params.category
 	const query = req.params.query
+	const page = req.params.page
+	console.log(page)
 
 	try {
-		const result = await axios.post(
-			`/games`,
-			`search "${query}"; fields *, cover.*, screenshots.*,artworks.*, first_release_date; limit 20; where themes != (42);`
-		)
-		console.log(result)
+		const result = await client
+			.query('games', 'result')
+			.search(`${query}*`)
+			.fields([
+				'*',
+				'cover.image_id',
+				'screenshots.*',
+				'artworks.*',
+				'first_release_date',
+			])
+			.offset(page)
+			.limit(20)
+			.where('themes != (42)')
+			.request('/games')
+
+		const count = await client
+			.query('games/count', 'count')
+			.search(`${query}*`)
+			.request('/games/count')
 
 		if (result && result.data.length > 0) {
 			// debug('Accessed data successfully: %0', result.data)
 			res.send({
 				status: 'success',
 				data: result.data,
+				count: count.data.count,
 			})
 		} else {
-			throw new error()
+			throw new Error()
 		}
 	} catch (err) {
+		console.log(err)
 		res.status(500).send({
 			status: 'error',
 			message: 'Exception thrown when attempting to access Game API',

@@ -11,7 +11,7 @@ router.get('/games', apiController.getGames)
 router.post('/games', apiController.getGamesWithIds)
 
 /** Search router */
-router.get('/search/:query', apiController.getSearchResult)
+router.get('/search/:query/:page', apiController.getSearchResult)
 
 router.get('/coming-soon', apiController.getUpcomingGames)
 
