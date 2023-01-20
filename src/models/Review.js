@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 			},
 			content: {
-				type: DataTypes.TEXT('tiny'),
+				type: DataTypes.TEXT('medium'),
 				allowNull: false,
 				// allowNull defaults to true
 			},
@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			game_id: {
 				type: DataTypes.INTEGER,
+				allowNull: false,
+			},
+			game_name: {
+				type: DataTypes.STRING(45),
 				allowNull: false,
 			},
 		},

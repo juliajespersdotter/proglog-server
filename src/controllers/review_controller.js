@@ -103,6 +103,7 @@ const postCommentOnReview = async (req, res) => {
 const addReview = async (req, res) => {
 	const gameId = req.params.gameId
 	const data = req.body.data
+	console.log(gameId, data)
 
 	try {
 		const user = await db.User.findOne({ where: { id: data.userId } })
@@ -114,9 +115,10 @@ const addReview = async (req, res) => {
 			hide: data.hide,
 			created_on: date,
 			game_id: gameId,
+			game_name: data.game.name,
 			rating: data.rating,
 		})
-		if (user) {
+		if (review) {
 			debug('Created review successfully: %0', review)
 			res.send({
 				status: 'success',
@@ -145,25 +147,21 @@ const deleteReview = async (req, res) => {
 	const review = await db.Review.findOne({
 		where: { id: reviewId, user_id: userId },
 	})
-	if (user && review) {
-		try {
-			const deletedReview = await db.Review.destroy({
-				where: { id: reviewId, user_id: userId },
-			})
+	try {
+		const deletedReview = await db.Review.destroy({
+			where: { id: reviewId, user_id: userId },
+		})
 
-			if (deletedReview) {
-				res.status(200).send({
-					status: 'success',
-					data: deletedReview,
-				})
-			}
-		} catch (err) {
-			console.log(err)
+		if (deletedReview) {
+			res.status(200).send({
+				status: 'success',
+				data: deletedReview,
+			})
 		}
-	} else {
+	} catch (err) {
 		res.status(500).send({
 			status: 'error',
-			message: 'Exception thrown when attempting to delete review',
+			message: 'Exception thrown when attempting to find list with games',
 		})
 	}
 }

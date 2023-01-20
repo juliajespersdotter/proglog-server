@@ -19,6 +19,12 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				// allowNull defaults to true
 			},
+			date_added: {
+				type: DataTypes.DATE(),
+			},
+			rating: {
+				type: DataTypes.INTEGER,
+			},
 		},
 		{
 			tableName: 'games_userlists',

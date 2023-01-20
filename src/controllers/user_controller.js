@@ -66,6 +66,7 @@ const getGamesInList = async (req, res) => {
 
 	const games = await db.Game_Userlist.findAll({ where: { list_id: listId } })
 	const list = await db.User_List.findOne({ where: { id: listId } })
+
 	if (games.length && list) {
 		// debug('Found games in list successfully: %0', games)
 		const idArray = []
@@ -76,8 +77,7 @@ const getGamesInList = async (req, res) => {
 
 		res.send({
 			status: 'success',
-			data: idArray,
-			list: list,
+			data: { idArray, list, games },
 		})
 	} else {
 		res.status(500).send({
@@ -130,11 +130,15 @@ const addGameToList = async (req, res) => {
 		where: { list_id: listId, game_id: gameId },
 	})
 
+	// const list = await db.User_List.findOne({ where: { id: listId } })
+
 	if (user && !existingGame) {
 		try {
+			const date = Date.now()
 			const addedGame = await db.Game_Userlist.create({
 				list_id: listId,
 				game_id: gameId,
+				date_added: date,
 			})
 
 			if (addedGame) {
