@@ -8,7 +8,7 @@ passport.use(
 		{
 			clientID: process.env.GOOGLE_CLIENT_ID,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-			callbackURL: `${BASE_URL}/auth/google/callback`,
+			callbackURL: `${process.env.BASE_URL}/auth/google/callback`,
 			passReqToCallback: true,
 		},
 		async (request, accessToken, refreshToken, profile, cb) => {
@@ -91,8 +91,8 @@ passport.use(
 passport.use(
 	new SteamStrategy(
 		{
-			returnURL: `${BASE_URL}/auth/steam/return`,
-			realm: `${BASE_URL}`,
+			returnURL: `${process.env.BASE_URL}/auth/steam/return`,
+			realm: `${process.env.BASE_URL}`,
 			apiKey: process.env.STEAM_API_KEY,
 		},
 		async (identifier, profile, cb) => {
