@@ -2,6 +2,11 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const dbConfig = require('../config/dbConfig')
 
+const URI = `${process.env.MYSQL_URL}`
+
+const sequelize = new Sequelize(URI)
+
+/*
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 	host: dbConfig.HOST,
 	dialect: dbConfig.DIALECT,
@@ -15,7 +20,7 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 	dialectOptions: {
 		socketPath: process.env.MYSQL_URL,
 	},
-})
+})*/
 
 sequelize
 	.authenticate()
