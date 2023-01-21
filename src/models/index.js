@@ -13,7 +13,7 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 		idle: dbConfig.pool.idle,
 	},
 	dialectOptions: {
-		socketPath: MYSQL_URL,
+		socketPath: process.env.MYSQL_URL,
 	},
 })
 
