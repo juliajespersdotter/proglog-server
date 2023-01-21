@@ -11,13 +11,13 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING(45),
 			},
 			steamId: {
-				type: DataTypes.VARCHAR(45),
+				type: DataTypes.STRING(45),
 			},
 			googleId: {
-				type: DataTypes.VARCHAR(45),
+				type: DataTypes.STRING(45),
 			},
 			avatar: {
-				type: DataTypes.VARCHAR(255),
+				type: DataTypes.STRING(255),
 			},
 		},
 		{
