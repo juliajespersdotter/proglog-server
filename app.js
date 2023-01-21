@@ -15,8 +15,8 @@ app.use(logger('dev'))
 app.use(
 	cors({
 		origin: [
-			'https://proglog.netlify.app',
-			'https://proglog.netlify.app/login',
+			`${process.env.FRONTEND_URL}`,
+			`${process.env.FRONTEND_URL}/login`,
 			'http://localhost:5173/login',
 			'http://127.0.0.1:5173',
 		],
