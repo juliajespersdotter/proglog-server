@@ -4,7 +4,6 @@ const logger = require('morgan')
 const passport = require('passport')
 require('dotenv').config()
 const session = require('express-session')
-// const port = 3000
 
 // instantiate express
 const app = express()
@@ -16,7 +15,7 @@ app.use(logger('dev'))
 app.use(
 	cors({
 		origin: [
-			'http://localhost:5173',
+			'https://proglog.netlify.app',
 			'http://localhost:5173/login',
 			'http://127.0.0.1:5173',
 		],

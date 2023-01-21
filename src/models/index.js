@@ -2,7 +2,7 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const dbConfig = require('../config/dbConfig')
 
-const URI = `${process.env.MYSQL_URL}`
+const URI = `mysql://${process.env.MYSQLUSER}:${process.env.MYSQLPASSWORD}@${process.env.MYSQLHOST}:${process.env.MYSQLPORT}/${process.env.MYSQLDATABASE}`
 
 const sequelize = new Sequelize(URI)
 
