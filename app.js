@@ -16,6 +16,7 @@ app.use(
 	cors({
 		origin: [
 			'https://proglog.netlify.app',
+			'https://proglog.netlify.app/login',
 			'http://localhost:5173/login',
 			'http://127.0.0.1:5173',
 		],

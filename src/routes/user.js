@@ -55,7 +55,6 @@ router.delete('/logout', isUserAuthenticated, (req, res) => {
 				res.status(400).send('Unable to log out')
 			} else {
 				res.status(200).send({ status: 'success' })
-				// res.redirect('http://localhost:5173/login')
 			}
 		})
 	}

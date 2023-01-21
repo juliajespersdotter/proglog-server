@@ -1,25 +1,10 @@
 const express = require('express')
 const passport = require('passport')
 const router = express.Router()
-// const steam_controller = require('../controllers/steam_controller')
-// const google_controller = require('../controllers/google_controller')
 const userValidationRules = require('../validation/user')
 
-const successLoginUrl = 'http://localhost:5173/login/success'
-const errorLoginUrl = 'http://localhost:5173/login'
-
-/* Register a new user */
-// router.post('/register', authController.register)
-
-/* Login a user */
-// router.post(
-// 	'/login/password',
-// 	passport.authenticate('local', {
-// 		successRedirect: '/protected',
-// 		failureRedirect: '/login',
-// 	})
-// )
-// router.post('/login', userValidationRules.loginRules, authController.login)
+const successLoginUrl = `${FRONTEND_URL}login/success`
+const errorLoginUrl = `${FRONTEND_URL}login`
 
 // authenticate with google
 router.get('/google', passport.authenticate('google', { scope: ['profile'] }))
