@@ -1,7 +1,6 @@
 // Setting up the database connection
 const { Sequelize, DataTypes } = require('sequelize')
 const dbConfig = require('../config/dbConfig')
-console.log(dbConfig)
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 	host: dbConfig.HOST,
@@ -12,6 +11,9 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 		min: dbConfig.pool.min,
 		acquire: dbConfig.pool.acquire,
 		idle: dbConfig.pool.idle,
+	},
+	dialectOptions: {
+		socketPath: '/var/run/mysqld/mysqld.sock',
 	},
 })
 
