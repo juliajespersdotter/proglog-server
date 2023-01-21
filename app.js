@@ -29,9 +29,14 @@ app.use(express.urlencoded({ extended: false }))
 app.use(
 	session({
 		secret: process.env.SESSION_SECRET,
-		saveUninitialized: false,
+		saveUninitialized: true,
+		proxy: true,
 		resave: false,
+		name: 'MyCoolWebAppCookieName',
 		cookie: {
+			secure: true,
+			httpOnly: false,
+			sameSite: 'none',
 			maxAge: 3600000,
 		},
 	})

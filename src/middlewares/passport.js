@@ -60,27 +60,6 @@ passport.use(
 					console.log(err)
 				}
 			}
-
-			/*
-			const [user_lists_defaults, listcreated] =
-				await db.User_List.findOrCreate({
-					where: {
-						user_id: user.id,
-					},
-					defaults: {
-						list_name: 'Want to Play',
-						private: false,
-						deletable: false,
-						user_id: user.id,
-						description: 'A list containing games you want to play',
-					},
-				})
-				
-			// console.log(user.googleId)
-			// console.log(user_lists_defaults)
-			// console.log(created)
-			// console.log(listcreated)
-			*/
 			if (user) {
 				return cb(null, user)
 			}
@@ -147,22 +126,6 @@ passport.use(
 				}
 			}
 
-			/*
-			const [user_lists_defaults, listcreated] =
-				await db.User_List.findOrCreate({
-					where: {
-						user_id: user.id,
-					},
-					defaults: {
-						list_name: 'Want to Play',
-						private: false,
-						deletable: false,
-						user_id: user.id,
-						description: 'A list containing games you want to play',
-					},
-				})
-				*/
-
 			if (user) {
 				return cb(null, user)
 			}
@@ -171,7 +134,6 @@ passport.use(
 )
 
 passport.serializeUser((user, cb) => {
-	// console.log('Serializing the user:', user)
 	cb(null, user.id)
 })
 
@@ -180,8 +142,6 @@ passport.deserializeUser(async (id, cb) => {
 		console.log('Error deserializing', err)
 		cb(err, null)
 	})
-
-	// console.log('Deserialized user', user)
 
 	if (user) cb(null, user)
 })
