@@ -103,7 +103,6 @@ const postCommentOnReview = async (req, res) => {
 const addReview = async (req, res) => {
 	const gameId = req.params.gameId
 	const data = req.body.data
-	console.log(gameId, data)
 
 	try {
 		const user = await db.User.findOne({ where: { id: data.userId } })
@@ -172,7 +171,6 @@ const deleteReview = async (req, res) => {
  * DELETE /comments/:userId/:commentId
  */
 const deleteComment = async (req, res) => {
-	// console.log(commentId, userId)
 	const commentId = req.params.commentId
 	const userId = req.params.userId
 
@@ -193,12 +191,16 @@ const deleteComment = async (req, res) => {
 				})
 			}
 		} catch (err) {
-			console.log(err)
+			res.status(500).send({
+				status: 'error',
+				message: 'An error has occurred',
+				error: err,
+			})
 		}
 	} else {
-		res.status(500).send({
+		res.status(404).send({
 			status: 'error',
-			message: 'Exception thrown when attempting to delete comment',
+			message: 'Cannot find user or comment to delete',
 		})
 	}
 }

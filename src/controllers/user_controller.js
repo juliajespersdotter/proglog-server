@@ -59,7 +59,7 @@ const getUserLists = async (req, res) => {
 /**
  * Get a User's games in list
  *
- * GET /games
+ * GET /games/:listId
  */
 const getGamesInList = async (req, res) => {
 	const listId = req.params.listId
@@ -67,7 +67,7 @@ const getGamesInList = async (req, res) => {
 	const games = await db.Game_Userlist.findAll({ where: { list_id: listId } })
 	const list = await db.User_List.findOne({ where: { id: listId } })
 
-	if (games.length && list) {
+	if (games.length > 0 && list) {
 		// debug('Found games in list successfully: %0', games)
 		const idArray = []
 
@@ -77,18 +77,50 @@ const getGamesInList = async (req, res) => {
 
 		res.send({
 			status: 'success',
-			data: { idArray, list, games },
+			data: idArray,
+			list: list,
+			games: games,
 		})
 	} else {
-		res.status(500).send({
+		res.status(404).send({
 			status: 'error',
-			message: 'Exception thrown when attempting to find list with games',
+			message: 'No games found in list',
 		})
 	}
 }
 
 /**
- * Get a specific list (with games)
+ * Get a User's games in list
+ *
+ * GET /games/:listId/:gameId
+ */
+const updateGameInList = async (req, res) => {
+	const listId = req.params.listId
+	const gameId = req.params.gameId
+	const data = req.body.data
+
+	const game = await db.Game_Userlist.findOne({
+		where: { list_id: listId, game_id: gameId },
+	})
+
+	if (game) {
+		const updatedGame = await db.Game_Userlist.update(data, {
+			where: { game_id: gameId, list_id: listId },
+		})
+		res.send({
+			status: 'success',
+			data: updatedGame,
+		})
+	} else {
+		res.status(500).send({
+			status: 'error',
+			message: 'Exception thrown when attempting to update game in list',
+		})
+	}
+}
+
+/**
+ * Get a specific list
  *
  * GET /list/:userId/:listId
  */
@@ -100,7 +132,6 @@ const getList = async (req, res) => {
 	})
 
 	if (list) {
-		console.log(list)
 		// debug('Found list successfully: %0', list)
 		res.send({
 			status: 'success',
@@ -110,6 +141,34 @@ const getList = async (req, res) => {
 		res.status(500).send({
 			status: 'error',
 			message: 'Exception thrown when attempting to find list',
+		})
+	}
+}
+
+/**
+ * Get a specific game in list
+ *
+ * GET /list/:listId/:gameId
+ */
+const getGameInList = async (req, res) => {
+	const listId = req.params.listId
+	const gameId = req.params.gameId
+
+	const gameInList = await db.Game_Userlist.findOne({
+		where: { list_id: listId, game_id: gameId },
+	})
+
+	if (gameInList) {
+		res.send({
+			status: 'success',
+			data: gameInList,
+			isAdded: true,
+		})
+	} else {
+		res.send({
+			status: 'success',
+			data: gameInList,
+			isAdded: false,
 		})
 	}
 }
@@ -148,12 +207,16 @@ const addGameToList = async (req, res) => {
 				})
 			}
 		} catch (err) {
-			console.log(err)
+			res.status(500).send({
+				status: 'error',
+				message: 'Exception thrown when attempting to add game to list',
+				error: err,
+			})
 		}
 	} else {
-		res.status(500).send({
+		res.status(404).send({
 			status: 'error',
-			message: 'Exception thrown when attempting to add game to list',
+			message: 'Cannot find user or game already exists in list',
 		})
 	}
 }
@@ -186,12 +249,16 @@ const addNewList = async (req, res) => {
 				})
 			}
 		} catch (err) {
-			console.log(err)
+			res.status(500).send({
+				status: 'error',
+				message: 'Exception thrown when attempting to add game to list',
+				error: err,
+			})
 		}
 	} else {
-		res.status(500).send({
+		res.status(401).send({
 			status: 'error',
-			message: 'Exception thrown when attempting to add game to list',
+			message: 'Cannot find user to associate with list',
 		})
 	}
 }
@@ -204,7 +271,6 @@ const addNewList = async (req, res) => {
 const deleteList = async (req, res) => {
 	const userId = req.params.userId
 	const listId = req.params.listId
-	console.log(listId, userId)
 
 	const user = await db.User.findOne({ where: { id: userId } })
 	const userList = await db.User_List.findOne({
@@ -228,12 +294,16 @@ const deleteList = async (req, res) => {
 				})
 			}
 		} catch (err) {
-			console.log(err)
+			res.status(500).send({
+				status: 'error',
+				message: 'Exception thrown when attempting to delete list',
+				err,
+			})
 		}
 	} else {
-		res.status(500).send({
+		res.status(404).send({
 			status: 'error',
-			message: 'Exception thrown when attempting to add game to list',
+			message: 'Cannot find user or list associated with user',
 		})
 	}
 }
@@ -247,7 +317,6 @@ const deleteGame = async (req, res) => {
 	const userId = req.params.userId
 	const listId = req.params.listId
 	const gameId = req.params.gameId
-	console.log(listId, userId, gameId)
 
 	const user = await db.User.findOne({ where: { id: userId } })
 	const userList = await db.User_List.findOne({
@@ -270,12 +339,17 @@ const deleteGame = async (req, res) => {
 				})
 			}
 		} catch (err) {
-			console.log(err)
+			res.status(500).send({
+				status: 'error',
+				message:
+					'Exception thrown when attempting to delete game in list',
+				error: err,
+			})
 		}
 	} else {
-		res.status(500).send({
+		res.status(404).send({
 			status: 'error',
-			message: 'Exception thrown when attempting to delete game in list',
+			message: 'Cannot find user or game to associate with list',
 		})
 	}
 }
@@ -314,7 +388,9 @@ const getProfileData = async (req, res) => {
 module.exports = {
 	getUser,
 	getUserLists,
+	getGameInList,
 	getGamesInList,
+	updateGameInList,
 	getList,
 	addGameToList,
 	addNewList,

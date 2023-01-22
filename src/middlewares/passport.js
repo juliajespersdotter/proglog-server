@@ -23,7 +23,6 @@ passport.use(
 				},
 				defaults: defaultUser,
 			}).catch(err => {
-				console.log('error signing up', err)
 				cb(err, null)
 			})
 
@@ -57,7 +56,7 @@ passport.use(
 						},
 					])
 				} catch (err) {
-					console.log(err)
+					cb(err, null)
 				}
 			}
 			if (user) {
@@ -76,7 +75,6 @@ passport.use(
 		},
 		async (identifier, profile, cb) => {
 			profile.identifier = identifier
-			console.log('PROFILE', profile)
 			const defaultUser = {
 				steamId: profile._json.steamid,
 				username: profile.displayName,
@@ -88,7 +86,6 @@ passport.use(
 				},
 				defaults: defaultUser,
 			}).catch(err => {
-				console.log('error signing up', err)
 				cb(err, null)
 			})
 
@@ -122,7 +119,7 @@ passport.use(
 						},
 					])
 				} catch (err) {
-					console.log(err)
+					cb(err, null)
 				}
 			}
 
@@ -139,7 +136,6 @@ passport.serializeUser((user, cb) => {
 
 passport.deserializeUser(async (id, cb) => {
 	const user = await db.User.findOne({ where: { id } }).catch(err => {
-		console.log('Error deserializing', err)
 		cb(err, null)
 	})
 

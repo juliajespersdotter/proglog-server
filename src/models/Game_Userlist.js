@@ -25,6 +25,9 @@ module.exports = (sequelize, DataTypes) => {
 			rating: {
 				type: DataTypes.INTEGER,
 			},
+			favorited: {
+				type: DataTypes.BOOLEAN,
+			},
 		},
 		{
 			tableName: 'games_userlists',

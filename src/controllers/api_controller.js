@@ -54,8 +54,6 @@ const getGamesByGenre = async (req, res) => {
 			.where(`genres = ${genreId} & themes != (42) & hypes!=n`)
 			.request('/games/count')
 
-		console.log(result.data)
-
 		if (result && result.data.length > 0) {
 			// debug('Accessed data successfully: %0', result.data)
 			res.send({
@@ -67,7 +65,6 @@ const getGamesByGenre = async (req, res) => {
 			throw new Error()
 		}
 	} catch (err) {
-		console.log(err)
 		res.status(500).send({
 			status: 'error',
 			message: 'Exception thrown when attempting to access Game API',
@@ -119,8 +116,6 @@ const getGenres = async (req, res) => {
 			.limit(100)
 			.request('/genres')
 
-		console.log(result.data)
-
 		if (result && result.data.length > 0) {
 			// debug('Accessed data successfully: %0', result.data)
 			res.send({
@@ -131,7 +126,6 @@ const getGenres = async (req, res) => {
 			throw new Error()
 		}
 	} catch (err) {
-		console.log(err)
 		res.status(500).send({
 			status: 'error',
 			message: 'Exception thrown when attempting to access Game API',
@@ -181,7 +175,6 @@ const getSearchResult = async (req, res) => {
 			throw new Error()
 		}
 	} catch (err) {
-		console.log(err)
 		res.status(500).send({
 			status: 'error',
 			message: 'Exception thrown when attempting to access Game API',

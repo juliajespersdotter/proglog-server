@@ -18,7 +18,6 @@ router.get(
 		failureRedirect: errorLoginUrl,
 	}),
 	(req, res) => {
-		console.log('User', req.user)
 		res.send('Thank you for signing in!')
 	}
 )
@@ -39,7 +38,6 @@ router.get(
 	}),
 	(req, res) => {
 		// Successful authentication, redirect home.
-		console.log('User', req.user)
 		res.send('Thank you for signing in!')
 	}
 )

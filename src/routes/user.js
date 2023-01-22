@@ -22,6 +22,13 @@ router.get('/:userId', isUserAuthenticated, userController.getUser)
 /** Get user lists */
 router.get('/lists/:userId', isUserAuthenticated, userController.getUserLists)
 
+/** Check for game in list */
+router.get(
+	'/lists/:listId/:gameId',
+	isUserAuthenticated,
+	userController.getGameInList
+)
+
 /** Post New user list */
 router.post('/lists/:userId', isUserAuthenticated, userController.addNewList)
 
@@ -34,6 +41,12 @@ router.delete(
 
 /** Get games in user list */
 router.get('/games/:listId', isUserAuthenticated, userController.getGamesInList)
+
+router.post(
+	'/games/:listId/:gameId',
+	isUserAuthenticated,
+	userController.updateGameInList
+)
 
 /** Delete Game in list */
 router.delete(

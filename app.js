@@ -30,13 +30,13 @@ app.use(
 	session({
 		secret: process.env.SESSION_SECRET,
 		saveUninitialized: true,
-		proxy: true,
+		// proxy: true,
 		resave: false,
-		name: 'MyCoolWebAppCookieName',
+		// name: 'development',
 		cookie: {
-			secure: true,
-			httpOnly: false,
-			sameSite: 'none',
+			// secure: true,
+			// httpOnly: false,
+			// sameSite: 'none',
 			maxAge: 3600000,
 		},
 	})
