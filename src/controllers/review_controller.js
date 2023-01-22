@@ -12,7 +12,6 @@ const getReviews = async (req, res) => {
 	try {
 		const reviews = await db.Review.findAll({ where: { game_id: gameId } })
 		const sortedReviews = reviews.sort(function (a, b) {
-			// sort reviews so latest review shows first
 			return new Date(b.created_on) - new Date(a.created_on)
 		})
 		if (reviews.length > 0) {
@@ -20,6 +19,11 @@ const getReviews = async (req, res) => {
 			res.send({
 				status: 'success',
 				data: sortedReviews,
+			})
+		} else {
+			res.status(404).send({
+				status: 'error',
+				message: 'No reviews yet',
 			})
 		}
 	} catch (err) {
@@ -48,6 +52,11 @@ const getCommentsForReview = async (req, res) => {
 			res.send({
 				status: 'success',
 				data: comments,
+			})
+		} else {
+			res.status(404).send({
+				status: 'error',
+				message: 'No comments yet',
 			})
 		}
 	} catch (err) {
@@ -79,13 +88,11 @@ const postCommentOnReview = async (req, res) => {
 			user_id: review.user_id,
 			created_by: data.creatorId,
 		})
-		if (comment) {
-			debug('Created comment successfully: %0', comment)
-			res.send({
-				status: 'success',
-				data: comment,
-			})
-		}
+		debug('Created comment successfully: %0', comment)
+		res.send({
+			status: 'success',
+			data: comment,
+		})
 	} catch (err) {
 		res.status(500).send({
 			status: 'error',
@@ -117,13 +124,11 @@ const addReview = async (req, res) => {
 			game_name: data.game.name,
 			rating: data.rating,
 		})
-		if (review) {
-			debug('Created review successfully: %0', review)
-			res.send({
-				status: 'success',
-				data: review,
-			})
-		}
+		debug('Created review successfully: %0', review)
+		res.send({
+			status: 'success',
+			data: review,
+		})
 	} catch (err) {
 		res.status(500).send({
 			status: 'error',
@@ -142,21 +147,15 @@ const deleteReview = async (req, res) => {
 	const reviewId = req.params.reviewId
 	const userId = req.params.userId
 
-	const user = await db.User.findOne({ where: { id: userId } })
-	const review = await db.Review.findOne({
-		where: { id: reviewId, user_id: userId },
-	})
 	try {
 		const deletedReview = await db.Review.destroy({
 			where: { id: reviewId, user_id: userId },
 		})
 
-		if (deletedReview) {
-			res.status(200).send({
-				status: 'success',
-				data: deletedReview,
-			})
-		}
+		res.status(200).send({
+			status: 'success',
+			data: deletedReview,
+		})
 	} catch (err) {
 		res.status(500).send({
 			status: 'error',
@@ -174,22 +173,19 @@ const deleteComment = async (req, res) => {
 	const commentId = req.params.commentId
 	const userId = req.params.userId
 
-	const user = await db.User.findOne({ where: { id: userId } })
 	const comment = await db.Comment.findOne({
 		where: { id: commentId, created_by: userId },
 	})
-	if (user && comment) {
+	if (comment) {
 		try {
 			const deletedComment = await db.Comment.destroy({
 				where: { id: commentId, created_by: userId },
 			})
 
-			if (deletedComment) {
-				res.status(200).send({
-					status: 'success',
-					data: deletedComment,
-				})
-			}
+			res.status(200).send({
+				status: 'success',
+				data: deletedComment,
+			})
 		} catch (err) {
 			res.status(500).send({
 				status: 'error',
@@ -200,7 +196,7 @@ const deleteComment = async (req, res) => {
 	} else {
 		res.status(404).send({
 			status: 'error',
-			message: 'Cannot find user or comment to delete',
+			message: 'Cannot find comment to delete',
 		})
 	}
 }

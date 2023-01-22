@@ -373,7 +373,13 @@ const getProfileData = async (req, res) => {
 
 		res.status(200).send({
 			status: 'success',
-			user: user,
+			user: {
+				userId: user.id,
+				username: user.username,
+				steamId: user.steamId,
+				googleId: user.googleId,
+				avatar: user.avatar,
+			},
 			reviews: userReviews,
 			lists: userLists,
 		})
