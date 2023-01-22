@@ -1,5 +1,5 @@
 /**
- * User_List model
+ * Game_Userlist model
  */
 
 module.exports = (sequelize, DataTypes) => {
@@ -17,10 +17,10 @@ module.exports = (sequelize, DataTypes) => {
 			game_id: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
-				// allowNull defaults to true
 			},
 			date_added: {
 				type: DataTypes.DATE(),
+				allowNull: false,
 			},
 			rating: {
 				type: DataTypes.INTEGER,
@@ -28,11 +28,14 @@ module.exports = (sequelize, DataTypes) => {
 			favorited: {
 				type: DataTypes.BOOLEAN,
 			},
+			game_name: {
+				type: DataTypes.TEXT('tiny'),
+				allowNull: false,
+			},
 		},
 		{
 			tableName: 'games_userlists',
 			timestamps: false,
-			// Other model options go here
 		}
 	)
 }

@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
 	return sequelize.define(
 		'review',
 		{
-			// Model attributes are defined here
 			user_id: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
@@ -22,7 +21,6 @@ module.exports = (sequelize, DataTypes) => {
 			content: {
 				type: DataTypes.TEXT('medium'),
 				allowNull: false,
-				// allowNull defaults to true
 			},
 			rating: {
 				type: DataTypes.INTEGER,
@@ -43,7 +41,6 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			tableName: 'reviews',
 			timestamps: false,
-			// Other model options go here
 		}
 	)
 }

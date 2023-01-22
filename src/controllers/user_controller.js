@@ -1,6 +1,4 @@
 const db = require('../models')
-const debug = require('debug')('proglog:authController')
-const { matchedData, validationResult } = require('express-validator')
 
 /**
  * Get a User's info
@@ -43,7 +41,6 @@ const getUserLists = async (req, res) => {
 	})
 
 	if (userlists) {
-		// debug('Found user with lists successfully: %0', userlists)
 		res.send({
 			status: 'success',
 			data: userlists,
@@ -90,9 +87,9 @@ const getGamesInList = async (req, res) => {
 }
 
 /**
- * Get a User's games in list
+ * Update game in list
  *
- * GET /games/:listId/:gameId
+ * POST /games/:listId/:gameId
  */
 const updateGameInList = async (req, res) => {
 	const listId = req.params.listId
@@ -104,17 +101,26 @@ const updateGameInList = async (req, res) => {
 	})
 
 	if (game) {
-		const updatedGame = await db.Game_Userlist.update(data, {
-			where: { game_id: gameId, list_id: listId },
-		})
-		res.send({
-			status: 'success',
-			data: updatedGame,
-		})
+		try {
+			const updatedGame = await db.Game_Userlist.update(data, {
+				where: { game_id: gameId, list_id: listId },
+			})
+
+			res.send({
+				status: 'success',
+				data: updatedGame,
+			})
+		} catch (err) {
+			res.status(500).send({
+				status: 'error',
+				message: 'Exception thrown when attempting to update game',
+				err,
+			})
+		}
 	} else {
-		res.status(500).send({
+		res.status(404).send({
 			status: 'error',
-			message: 'Exception thrown when attempting to update game in list',
+			message: 'Game not found to update',
 		})
 	}
 }
@@ -180,23 +186,22 @@ const getGameInList = async (req, res) => {
  */
 const addGameToList = async (req, res) => {
 	const userId = req.params.userId
-	const gameId = req.body.gameId
+	const game = req.body.game
 	const listId = req.body.listId
 
 	const user = await db.User.findOne({ where: { id: userId } })
 
 	const existingGame = await db.Game_Userlist.findOne({
-		where: { list_id: listId, game_id: gameId },
+		where: { list_id: listId, game_id: game.id },
 	})
-
-	// const list = await db.User_List.findOne({ where: { id: listId } })
 
 	if (user && !existingGame) {
 		try {
 			const date = Date.now()
 			const addedGame = await db.Game_Userlist.create({
 				list_id: listId,
-				game_id: gameId,
+				game_id: game.id,
+				game_name: game.name,
 				date_added: date,
 			})
 
@@ -222,7 +227,7 @@ const addGameToList = async (req, res) => {
 }
 
 /**
- * POST new game to list
+ * POST new list
  *
  * POST /list/listId
  */

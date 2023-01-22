@@ -1,6 +1,3 @@
-const { Error } = require('sequelize')
-
-const debug = require('debug')('proglog:apiController')
 const axios = require('axios').default
 const igdb = require('igdb-api-node').default
 
@@ -9,23 +6,15 @@ axios.defaults.headers.common[
 	'Authorization'
 ] = `Bearer ${process.env.IGDB_ACCESS_TOKEN}`
 axios.defaults.headers.common['Client-ID'] = ` ${process.env.IGDB_CLIENT_ID}`
-// axios.defaults.params['key'] = api_key
 const client = igdb(
 	`${process.env.IGDB_CLIENT_ID}`,
 	`${process.env.IGDB_ACCESS_TOKEN}`
 )
 
-// const requestOptions = {
-// 	method: 'post',
-// 	baseUrl: 'https://api.igdb.com/v4/',
-// 	Authorization: `Bearer ${process.env.IGDB_ACCESS_TOKEN}`,
-// 	ClientID: `${process.env.IGDB_CLIENT_ID}`,
-// }
-
 /**
  * Get games by Genre
  *
- * GET /genres/:id
+ * /genres/:id
  */
 const getGamesByGenre = async (req, res) => {
 	const genreId = req.params.id
@@ -55,7 +44,6 @@ const getGamesByGenre = async (req, res) => {
 			.request('/games/count')
 
 		if (result && result.data.length > 0) {
-			// debug('Accessed data successfully: %0', result.data)
 			res.send({
 				status: 'success',
 				data: result.data,
@@ -72,6 +60,11 @@ const getGamesByGenre = async (req, res) => {
 	}
 }
 
+/**
+ * Get upcoming games
+ *
+ * /games
+ */
 const getUpcomingGames = async (req, res) => {
 	const today = Math.round(new Date().getTime() / 1000)
 	try {
@@ -94,7 +87,6 @@ const getUpcomingGames = async (req, res) => {
 			.request('/games')
 
 		if (result && result.data.length > 0) {
-			// debug('Accessed data successfully: %0', result.data)
 			res.send({
 				status: 'success',
 				data: result.data,
@@ -108,6 +100,11 @@ const getUpcomingGames = async (req, res) => {
 	}
 }
 
+/**
+ *
+ * Get genres
+ * /genres
+ */
 const getGenres = async (req, res) => {
 	try {
 		const result = await client
@@ -117,7 +114,6 @@ const getGenres = async (req, res) => {
 			.request('/genres')
 
 		if (result && result.data.length > 0) {
-			// debug('Accessed data successfully: %0', result.data)
 			res.send({
 				status: 'success',
 				data: result.data,
@@ -136,10 +132,9 @@ const getGenres = async (req, res) => {
 /**
  * Query game
  *
- * GET /search/:query
+ * /search/:query
  */
 const getSearchResult = async (req, res) => {
-	// const category = req.params.category
 	const query = req.params.query
 	const page = req.params.page
 
@@ -165,7 +160,6 @@ const getSearchResult = async (req, res) => {
 			.request('/games/count')
 
 		if (result && result.data.length > 0) {
-			// debug('Accessed data successfully: %0', result.data)
 			res.send({
 				status: 'success',
 				data: result.data,
@@ -185,7 +179,7 @@ const getSearchResult = async (req, res) => {
 /**
  * Get a specific game and info
  *
- * GET /:gameId
+ * /:gameId
  */
 const getGamesWithIds = async (req, res) => {
 	const gameIds = req.body.ids
@@ -196,7 +190,6 @@ const getGamesWithIds = async (req, res) => {
 		)
 
 		if (result && result.data.length > 0) {
-			// debug('Accessed games with ids successfully: %0', result.data)
 			res.send({
 				status: 'success',
 				data: result.data,

@@ -1,7 +1,6 @@
 const express = require('express')
 const passport = require('passport')
 const router = express.Router()
-const userValidationRules = require('../validation/user')
 
 const successLoginUrl = `${process.env.FRONTEND_URL}/login/success`
 const errorLoginUrl = `${process.env.FRONTEND_URL}/login`

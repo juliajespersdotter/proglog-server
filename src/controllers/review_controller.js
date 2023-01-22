@@ -88,7 +88,6 @@ const postCommentOnReview = async (req, res) => {
 			user_id: review.user_id,
 			created_by: data.creatorId,
 		})
-		debug('Created comment successfully: %0', comment)
 		res.send({
 			status: 'success',
 			data: comment,
@@ -124,7 +123,7 @@ const addReview = async (req, res) => {
 			game_name: data.game.name,
 			rating: data.rating,
 		})
-		debug('Created review successfully: %0', review)
+
 		res.send({
 			status: 'success',
 			data: review,

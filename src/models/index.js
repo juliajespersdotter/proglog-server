@@ -6,22 +6,6 @@ const URI = `mysql://${process.env.MYSQLUSER}:${process.env.MYSQLPASSWORD}@${pro
 
 const sequelize = new Sequelize(URI)
 
-/*
-const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-	host: dbConfig.HOST,
-	dialect: dbConfig.DIALECT,
-
-	pool: {
-		max: dbConfig.pool.max,
-		min: dbConfig.pool.min,
-		acquire: dbConfig.pool.acquire,
-		idle: dbConfig.pool.idle,
-	},
-	dialectOptions: {
-		socketPath: process.env.MYSQL_URL,
-	},
-})*/
-
 sequelize
 	.authenticate()
 	.then(() => {

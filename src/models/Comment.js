@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
 	return sequelize.define(
 		'comment',
 		{
-			// Model attributes are defined here
 			content_id: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
@@ -30,7 +29,6 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			tableName: 'comments',
 			timestamps: false,
-			// Other model options go here
 		}
 	)
 }

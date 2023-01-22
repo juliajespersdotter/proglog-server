@@ -12,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			private: {
 				type: DataTypes.BOOLEAN,
-				// allowNull defaults to true
 			},
 			deletable: {
 				type: DataTypes.BOOLEAN,
@@ -22,7 +21,6 @@ module.exports = (sequelize, DataTypes) => {
 				foreignKey: true,
 				allowNull: false,
 				references: {
-					// This is a reference to another model
 					model: 'user',
 				},
 			},
@@ -33,7 +31,6 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			tableName: 'user_lists',
 			timestamps: false,
-			// Other model options go here
 		}
 	)
 }

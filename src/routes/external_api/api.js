@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const apiController = require('../../controllers/api_controller')
 const steamController = require('../../controllers/steam_controller')
-const { isUserAuthenticated } = require('../../middlewares/auth')
 
 /** Get a specific game */
 router.post('/games', apiController.getGamesWithIds)
